@@ -1,0 +1,149 @@
+extends main
+
+block content
+  .container
+    .tab-content#richlist
+      if exp
+        .h3Border(style='margin-bottom:8px;')
+          h3 Top Expanse Accounts
+        .row
+          .col-sm-6
+            span
+              | A total of #{count} accounts found.
+              br
+              | Displaying the last 100 Top Accounts only
+          .col-sm-6
+            h4 Total Supply: #{new Intl.NumberFormat('us-US').format(totalSupply)} EXP
+
+      if lab
+        .h3Border(style='margin-bottom:8px;')
+          h3 Top Tokenlab Accounts
+        .row
+          .col-sm-6
+            span
+              | A total of #{count} accounts found.
+              br 
+              | Displaying the last 100 Top Accounts only
+          .col-sm-6
+            h4 Total Supply: #{new Intl.NumberFormat('us-US').format(totalSupply)} LAB
+      if pex
+        .h3Border(style='margin-bottom:8px;')
+          h3 Top Pex Accounts
+        .row
+          .col-sm-6
+            span.hidden-xs
+              | A total of #{count} accounts found.
+              br
+              | Displaying the last 100 Top Accounts only
+          .col-sm-6
+            h4 Total Supply: #{new Intl.NumberFormat('us-US').format(totalSupply)} PEX
+      .table-responsive
+        .richlistTable
+          table.table.block-info
+            thead
+              tr(style = "background-color: #F9F9F9")
+                th #
+                th.address Address
+                th
+                th Balance 
+                th Percentage
+                th Last Activity
+            tbody
+              for address in addresses
+                tr
+                  td #{id++}
+                  td 
+                    a(href="/account/" + address.address) #{address.address}
+                  td.new #{check.checkAddress(address.address)}
+                  if exp
+                    td #{Number(address.balance_EXP.toFixed(0)).toLocaleString()}.
+                      font(color='#ACB3B3') #{(Number(address.balance_EXP % 1)*1000).toFixed(0)} 
+                      | EXP
+                    td #{calcFunc.calcPercent(address.balance_EXP,totalSupply)}%
+                    td #{calcFunc.calcDate(address.last_active)} 
+                  if lab
+                    td #{Number(address.balance_LAB.toFixed(0)).toLocaleString()}.
+                      font(color='#ACB3B3') #{(Number(address.balance_LAB % 1)*1000).toFixed(0)}  
+                      | LAB
+                    td #{calcFunc.calcPercent(address.balance_LAB,totalSupply)}%
+                    td #{calcFunc.calcDate(address.last_active)} 
+                  if pex
+                    td #{Number(address.balance_PEX.toFixed(0)).toLocaleString()}.
+                      font(color='#ACB3B3') #{(Number(address.balance_PEX % 1)*1000).toFixed(0)} 
+                      | PEX
+                    td #{calcFunc.calcPercent(address.balance_PEX,totalSupply)}%
+                    td #{calcFunc.calcDate(address.last_active)} 
+      .pagn.pagn-right
+        ul.pagination
+          if exp
+            if page == 1
+              li.page-item.disabled
+                a.page-link(href="/richlist?p=1") First
+              li.page-item.disabled(title='Go to Previous')
+                a.page-link(href="/richlist?p=" + (page - 1))
+                  img(src='/img/chevron-left.png' width='10px' color='red')
+            else
+              li.page-item
+                a.page-link(href="/richlist?p=1") First
+              li.page-item(title='Go to Previous')
+                a.page-link(href="/richlist?p=" + (page - 1)) 
+                  img(src='/img/chevron-left.png' width='10px')
+            li.page-item.disabled
+              if count > 1000000
+                a.page-link #{page} of 1000 
+              else
+                a.page-link #{page} of #{Math.floor(count/1000)*10} 
+            li.page-item(title='Go to Next')
+              a.page-link(href="/richlist?p=" + (page + 1))
+                img(src='/img/chevron-right.png' width='10px')
+            li.page-item
+              a.page-link(href="/richlist?p="+ Math.floor(count/1000)*10) Last
+          if lab
+            if page == 1
+              li.page-item.disabled
+                a.page-link(href="/richlist/tokenlab?p=1") First
+              li.page-item.disabled(title='Go to Previous')
+                a.page-link(href="/richlist/tokenlab?p=" + (page - 1))
+                  img(src='/img/chevron-left.png' width='10px' color='red')
+            else
+              li.page-item
+                a.page-link(href="/richlist/tokenlab?p=1") First
+              li.page-item(title='Go to Previous')
+                a.page-link(href="/richlist/tokenlab?p=" + (page - 1)) 
+                  img(src='/img/chevron-left.png' width='10px')
+            li.page-item.disabled
+              if count > 1000000
+                a.page-link #{page} of 1000 
+              else
+                a.page-link #{page} of #{Math.floor(count/1000)*10} 
+            li.page-item(title='Go to Next')
+              a.page-link(href="/richlist/tokenlab?p=" + (page + 1))
+                img(src='/img/chevron-right.png' width='10px')
+            li.page-item
+              a.page-link(href="/richlist/tokenlab?p="+ Math.floor(count/1000)*10) Last
+          if pex 
+            if page == 1
+              li.page-item.disabled
+                a.page-link(href="/richlist/expex?p=1") First
+              li.page-item.disabled(title='Go to Previous')
+                a.page-link(href="/richlist/expex?p=" + (page - 1))
+                  img(src='/img/chevron-left.png' width='10px' color='red')
+            else
+              li.page-item
+                a.page-link(href="/richlist/expex?p=1") First
+              li.page-item(title='Go to Previous')
+                a.page-link(href="/richlist/expex?p=" + (page - 1)) 
+                  img(src='/img/chevron-left.png' width='10px')
+            li.page-item.disabled
+              if count > 1000000
+                a.page-link #{page} of 1000 
+              else
+                a.page-link #{page} of #{Math.floor(count/1000)*10} 
+            li.page-item(title='Go to Next')
+              a.page-link(href="/richlist/expex?p=" + (page + 1))
+                img(src='/img/chevron-right.png' width='10px')
+            li.page-item
+              a.page-link(href="/richlist/expex?p="+ Math.floor(count/1000)*10) Last
+
+        
+

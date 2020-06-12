@@ -1,0 +1,76 @@
+extends main
+
+block content
+  .container
+    .tab-content
+      .h3Border
+        h3(style="padding:5px") Token Transfers
+      .row
+        .container
+          .pagn
+            span.hidden-xs
+              | A total of #{allTxs} txs found
+              br
+              | Displaying the last 1000 records only
+            ul.pagination
+              if page == 1
+                li.page-item.disabled
+                  a.page-link(href="/tokenstxs?p=1") First
+                li.page-item.disabled(title='Go to Previous')
+                  a.page-link(href="/tokenstxs?p=" + (page - 1))
+                    img(src='/img/chevron-left.png' width='10px' color='red')
+              else
+                li.page-item
+                  a.page-link(href="/tokenstxs?p=1") First
+                li.page-item(title='Go to Previous')
+                  a.page-link(href="/tokenstxs?p=" + (page - 1)) 
+                    img(src='/img/chevron-left.png' width='10px')
+              li.page-item.disabled
+                a.page-link #{page} of #{Math.round(allTxs/1000)*10} 
+              if page == (Math.round(allTxs/1000)*10)
+                li.page-item.disabled(title='Go to Next')
+                  a.page-link(href="/tokenstxs?p=" + (page + 1))
+                    img(src='/img/chevron-right.png' width='10px')
+                li.page-item.disabled
+                  a.page-link(href="/tokenstxs?p="+ Math.round(allTxs/1000)*10) Last
+              else 
+                li.page-item(title='Go to Next')
+                  a.page-link(href="/tokenstxs?p=" + (page + 1))
+                    img(src='/img/chevron-right.png' width='10px')
+                li.page-item
+                  a.page-link(href="/tokenstxs?p="+ Math.round(allTxs/1000)*10) Last
+      .table-responsive
+        .tokentxs
+          table.table.block-info
+            thead
+              tr(style = "background-color: #F9F9F9")
+                th TxHash
+                th Age
+                th From
+                th
+                th To 
+                th Value
+                th Token
+            tbody
+              for tokenTx in tokensTxs
+                tr 
+                  td
+                    a(href='/tx/'+tokenTx.hash) #{tokenTx.hash.substr(0,10)}
+                    |...
+                  td #{calcFunc.calcDate(tokenTx.timestamp)}
+                  td 
+                    a(href='/account/'+ tokenTx.from) #{check.checkAddress(tokenTx.from,true)}
+                  td
+                    img(src='/img/arrow.png' width="25px" height="20px") 
+                  td 
+                    a(href='/account/'+ tokenTx.to) #{check.checkAddress(tokenTx.to,true)}
+                  td #{formatNumber(tokenTx.value)}
+                  td(style='display: flex; align-items: center; ') 
+                    if tokenTx.token == "LAB" 
+                      img(style='margin-right:4px' src='/img/tokens/tokenlab.png' width='14px')
+                      a(href='/token/'+ labAddr ) #{tokenTx.token}
+                    else
+                      img(style='margin-right:4px' src='/img/tokens/expex.png' width='14px')
+                      a(href='/token/'+ pexAddr) #{tokenTx.token}
+              
+

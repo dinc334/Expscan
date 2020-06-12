@@ -1,0 +1,62 @@
+extends main
+
+block content
+	.container
+		.h3Border 
+			h3 Expscan Public API, use it for free.
+		.apidocs
+			strong Get Address Balance
+			pre
+				a(href="http://expscan.info/v1/address=0xbab463743603a253bdf1f84975b1a9517505ae05") http://expscan.info/v1/address=address
+			p Response:
+			pre
+				| {
+				|	"response":"success",
+				|	"address":"0x4c9cd8f2e1a88db9df7b5afbf31540198c245395",
+				|	"balance":"0.0001"
+				| }
+		.apidocs
+			strong Get Info about Block
+			pre
+				a(href="http://expscan.info/v1/block=1326119") http://expscan.info/v1/block=blockNumber
+			p Response:
+			pre
+				| {
+				|	"response":"success",
+				|	"miner":"0xee4fadfe332fecf44e8d52349cbc772bb651a942",
+				|	"difficulty":"1073217536",
+				|	"hash":"0x3a750f3e3b7de99f712a8f8665363ca273b1f8422e9b1a869bab8e7c7645f151",
+				|	"timestamp":1442188848,
+				|	"transactions":[]
+				| }
+		.apidocs
+			strong Get Info about Hash
+			pre
+				a(href="http://expscan.info/v1/hash=0xed26ead490e9d74af974d022ef48706fefebdef61c1f7a71ebcaebe6ce170370") http://expscan.info/v1/hash=hashAddress
+			p Response:
+			pre
+				| {
+				|	"response":"success",
+				|	"from":"0x4c9cd8f2e1a88db9df7b5afbf31540198c245395",
+				|	"to":"0xc9710|872d3e65edbf7f8776829dd7b21f2085e40",
+				|	"value":"1.070 EXP"
+				| }
+		.apidocs
+			strong Get Tokens Balance on address
+			pre
+				a(href="http://expscan.info/v1/tokenBalance=0xbab463743603a253bdf1f84975b1a9517505ae05") http://expscan.info/v1/tokenBalance=address
+			p Response:
+			pre
+				| {
+				|	"response":"success",
+				|	"tokens":[{"ticker":"LAB","balance":"12530.474"},{"ticker":"PEX","balance":"110530"}]
+				| }
+		.apidocs
+			strong Get Total Coins
+			pre
+				a(href="http://expscan.info/v1/totalCoins") http://expscan.info/v1/totalCoins
+			p Response:
+			pre
+				| 19412208
+
+

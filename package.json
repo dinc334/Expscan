@@ -1,0 +1,35 @@
+{
+  "name": "Expscan",
+  "version": "0.0.6",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
+  },
+  "dependencies": {
+    "abi-decoder": "^1.0.9",
+    "async": "^2.6.2",
+    "bignumber.js": "^4.0.0",
+    "body-parser": "~1.16.0",
+    "canoe-solidity": "^0.1.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.0",
+    "ethereum-input-data-decoder": "0.0.12",
+    "ethereumjs-abi": "^0.6.5",
+    "ethereumjs-util": "^5.1.1",
+    "express": "~4.14.1",
+    "geoip-lite": "^1.3.7",
+    "javascript-time-ago": "^1.0.31",
+    "moment": "^2.22.2",
+    "node-cron": "^1.2.1",
+    "node-telegram-bot-api": "^0.30.0",
+    "numeral": "^2.0.4",
+    "pg": "^7.4.1",
+    "pug": "~2.0.0-beta10",
+    "request": "^2.85.0",
+    "sequelize": "^4.37.5",
+    "serve-favicon": "~2.3.2",
+    "string-similarity": "^1.2.0",
+    "tmp": "0.0.33",
+    "web3": "^1.0.0-beta.35"
+  }
+}

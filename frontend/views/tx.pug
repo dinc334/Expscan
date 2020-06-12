@@ -1,0 +1,175 @@
+extends main
+
+block content
+  .container  
+    .h3Border(style='margin-bottom: 8px')
+      h3 Transaction Details
+  .container
+    p.overview Overview
+      .block-heading
+        h4(style="font-weight:400;border-top:2px solid #ff7732") Transaction Information
+      .table-responsive
+        if tx.hash
+          table.table.block-info
+            tr
+              td TxHash: 
+              td.txHash
+                | #{tx.hash}
+            tr
+              td Block Height: 
+              td
+                a(href="/block/" + tx.blockNumber) #{tx.blockNumber}
+            tr
+              td TimeStamp:
+              if tx.timestamp 
+                td #{moment.unix(tx.timestamp).fromNow()} (#{moment.unix(tx.timestamp).format()})
+              else 
+                td Pending Transaction
+
+            tr
+              td From:
+              td
+                a(href="/account/" + tx.from) #{tx.from}
+            if txTokens
+              tr
+                td To:
+                td Contract 
+                  a(href="/account/" + tx.to) #{tx.to} 
+                  | (#{tokenData.name})
+              tr
+                td Token Transfered:
+                td 
+                  i.fa.fa-caret-right(style='margin-right:5px') 
+                  | From 
+                  a(href ="/account/" + txTokens.from) #{(txTokens.from).substr(0,25)}... 
+                  | To 
+                  a(href = "/account/" + txTokens.to) #{(txTokens.to).substr(0,25)}... 
+                  | for #{txTokens.value} 
+                  img(src='/img/tokens/' + tokenData.name.toLowerCase() +'.png' width='15px')
+                  span(style='margin-left: 5px')
+                    a(href ='/token/'+ tx.to) #{tokenData.ticker}
+            else
+              tr
+                td To:
+                td
+                  a(href = '/account/' + tx.to) #{tx.to}
+            tr
+              td Value:
+              td #{ethformatter(tx.value)}
+            tr
+              td Gas Used by Txn:
+              td #{tx.gas}
+            tr
+              td Gas Price: 
+              td #{tx.gas_price/Math.pow(10,18)}
+            tr
+              td Actual Tx Cost/Fee:
+              td #{(tx.gas*tx.gas_price)/Math.pow(10,18)} Exp ($#{Number((tx.gas*tx.gas_price)/Math.pow(10,18)*price.price_usd).toFixed(5)})
+            tr
+              td Nonce:
+              td #{tx.nonce}
+            if tx.callInfo
+              tr
+                td Function Name:
+                td #{tx.callInfo.name}
+              tr
+                td Parameters:
+                td
+                  table.table
+                    thead
+                      tr
+                        th Name
+                        th Type
+                        th Value
+                    tbody
+                      for pa in tx.callInfo.params
+                        tr
+                          td #{pa.name}
+                          td #{pa.type}
+                          if pa.type === "bytes" && pa.value
+                            td
+                              pre 0x#{pa.value.toString("hex")}
+                          else if pa.type === "uint256" && pa.value
+                            td.parameter-cell #{pa.value.toString(10)}
+                          else                    
+                            td.parameter-cell #{JSON.stringify(pa.value, null, 2)}
+            if tx.logs
+              tr
+                td Events:
+                td
+                  for log in tx.logs
+                    table.table
+                      thead
+                        tr
+                          th Name
+                          th Events
+                          th Address
+                      tbody
+                        tr
+                          td #{log.name}
+                          td
+                            table.table
+                              thead
+                                tr
+                                  th Name
+                                  th Type
+                                  th Value
+                              tbody
+                                for event in log.events
+                                  tr
+                                    td #{event.name}
+                                    td #{event.type}
+                                    td #{event.value}
+                          td #{log.address}
+            tr
+              td(style='width:150px') Data:
+              td
+                pre(style='white-space:pre-wrap') #{tx.data}
+        else
+          .errorBlock
+            img(src='/img/hacking.png')
+            p.errorMsg Sorry, We are unable to locate this transaction Hash.
+
+
+  //- a(href="/tx/raw/" + tx.hash) Raw Trace
+  //- h4 Internal Transactions
+  //- table.table
+  //-   thead
+  //-     tr
+  //-       th
+  //-       th Type
+  //-       th From
+  //-       th
+  //-       th To
+  //-       th Amount
+    //- tbody
+    //-   for trace in tx.traces
+    //-     tr
+    //-       td.text-right
+    //-         if trace.error
+    //-           span(style="color: red", data-toggle="tooltip", data-placement="left", title=trace.error).glyphicon.glyphicon-warning-sign
+    //-           |  
+    //-       td.capitalize #{trace.type}
+    //-       if trace.type === "call"
+    //-         td
+    //-           a(href="/account/" + trace.action.from) #{nameformatter.format(trace.action.from)}
+    //-         td 
+    //-           image(src="/img/arrow.png" width="25px" height="20px")
+    //-         td 
+    //-           a(href="/account/" + trace.action.to) #{nameformatter.format(trace.action.to)}
+    //-         td #{ethformatter(trace.action.value)}
+    //-       else if trace.type === "create"
+    //-         td
+    //-           a(href="/account/" + trace.action.from) #{nameformatter.format(trace.action.from)}
+    //-         td
+    //-           if trace.result
+    //-             a(href="/account/" + trace.result.address) #{nameformatter.format(trace.result.address)}
+    //-           else
+    //-             div #{'-'}
+    //-         td #{ethformatter(trace.action.value)}
+    //-       else if trace.type === "suicide"
+    //-         td
+    //-           a(href="/account/" + trace.action.address) #{nameformatter.format(trace.action.address)}
+    //-         td
+    //-           a(href="/account/" + trace.action.refundAddress) #{nameformatter.format(trace.action.refundAddress)}
+    //-         td #{ethformatter(trace.action.balance)}

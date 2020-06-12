@@ -1,0 +1,117 @@
+extends main
+
+block content
+  .container
+    .h3Border(style='margin-bottom:8px;')      
+      h3 Block 
+        if block
+          span.txblockheader ##{block.number}
+        else
+          span #{blockNumber}
+  .container
+    p.overview Overview
+      .block-heading
+        h4(style="font-weight:400;border-top:2px solid #ff7732") Block Information
+      .table-responsive
+        table.table.block-info
+          if block
+            tr 
+              td Height
+              td.heightBLock
+                a.btn.btn-primary.btn-xs(href="/block/" + (block.number - 1), role="button")  < Prev
+                p(style="font-weight:bold") #{block.number} 
+                a.btn.btn-primary.btn-xs(href="/block/" + (block.number + 1), role="button") Next >
+            tr
+              td Timestamp:
+              td #{moment.unix(block.timestamp).fromNow()} (#{moment.unix(block.timestamp).format()})
+            tr
+              td Hash:
+              td #{block.hash}
+            tr
+              td Parent hash: 
+              td 
+                a(href="/block/" + block.parentHash) #{block.parentHash}
+            tr
+              td Sha3Uncles:
+              td #{block.sha3Uncles}
+            tr
+              td Mined by: 
+              td  
+                a(href="/account/" + block.miner) #{check.checkAddress(block.miner,true)}
+            tr
+              td Difficulty:
+              td #{numeral(block.difficulty).format()} 
+            tr
+              td Total Difficulty:
+              td #{numeral(block.totalDifficulty).format()}
+            tr
+              td Size:
+              td #{numeral(block.size).format()} bytes
+            tr
+              td Gas Limit:
+              td #{numeral(block.gasLimit).format()}
+            tr
+              td Gas Used:
+              td #{numeral(block.gasUsed).format()}
+            tr
+              td Nonce
+              td #{block.nonce}
+            tr
+              td Transactions:
+              td #{transactions.length} transactions
+            tr
+              td Uncles:
+              td
+                if block.uncles && block.uncles.length > 0
+                  each uncle, index in block.uncles
+                    p
+                      a(href="uncle/" + block.hash + "/" + index) #{index + " - " + uncle}
+                else
+                  | 0
+            tr
+              td Extra Data:
+              td #{hexToString(block.extraData)} (Hex: #{block.extraData})
+          else
+            .errorBlock
+              img(src='/img/hacking.png')
+              p.errorMsg Sorry, We are unable to find this Block Number. 
+    if block
+      .blockTxs
+        .h3Border(style='margin-bottom: 8px')
+          h3 Transactions:
+        if transactions.length === 0
+          p Block does not contain any transactions.
+        else
+          .table-responsive 
+            table.table.block-info
+              thead
+                tr
+                  th Hash
+                  th Block
+                  th From
+                  th
+                  th To
+                  th Amount
+                  th TxFee
+              tbody
+                for tx in transactions
+                  tr
+                    td
+                      if tx.error
+                        span(style="color: red", data-toggle="tooltip", data-placement="left", title=tx.error).glyphicon.glyphicon-warning-sign
+                      a(href="/tx/" + tx.hash)  #{tx.hash.substr(0, 10)}...
+                    td #{tx.blockNumber}
+                    td
+                      a(href="/account/" + tx.from) #{tx.from}
+                    td 
+                      image(src="/img/arrow.png" width="25px" height="20px")
+                    td
+                      if tx.to
+                        a(href="/account/" + tx.to) #{tx.to}
+                      else
+                        | New Contract
+                    td(style="font-weight:bold") #{ethformatter(tx.value)} 
+                    //- 1089900000000000
+                    //- 0.00108
+                    td #{((tx.gas*tx.gas_price)/Math.pow(10,18)).toFixed(5)} Exp
+          

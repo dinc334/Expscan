@@ -1,0 +1,49 @@
+extends main
+
+block content
+	.container
+		.h3Border 
+			h3 Token Tracker
+	.container.tokenTraker
+		.row
+			.col-md-12
+				.tokensHeader
+					p Expanse Tokens Market Capitalization
+					form.navbar-form.navbar-right.searchToken(action="/tokens", method="GET" style='display: flex')
+						.input-group
+							input.form-control(type='text', placeholder='Search for Token Name or Address', name='search' style="width:270px")
+							span.input-group-btn
+								button.btn(type='submit')
+									i.fa.fa-search
+		.table-responsive
+			table.table.table-hover.block-info
+				thead
+					tr(style='background-color: #F9F9F9')
+						th #
+						th Token
+						th Price
+						//- th Change (%)
+						//- th Volume (24h)
+						th MarketCap
+						th Holders
+						th Transfers
+						th Rich List
+				tbody
+					for token in tokens
+						tr
+							td #{i++}
+							td
+								.tokensList
+									img(src='/img/tokens/'+token.name.toLowerCase()+'.png')
+									.tokenListBody(style='flex:1; max-width: 375px;')
+										h5 
+											a(href='/token/'+token.address) #{token.name} (#{token.ticker})
+										p.hidden-xs #{token.description}
+							//- td Later
+							//- td Later
+							td(style='font-weight:400; line-height: 19.5px;') $#{token.price_usd}
+							td $#{formatNumber(token.price_usd*token.totalSupply)}
+							td #{token.holders}
+							td #{token.transfers}
+							td 
+								a(href='/richlist/'+token.name.toLowerCase()) Link

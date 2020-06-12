@@ -1,0 +1,910 @@
+*{
+  padding: 0;
+  margin:0;
+  box-sizing: border-box;
+}
+
+
+html, body {
+  height: 100%;
+  margin: 0;
+}
+.wrapper {
+  min-height: 100%;
+}
+
+body {
+  color: #333;
+  font-size: 13px;
+  line-height: 1.6;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+a {
+  color: #3399ff;
+}
+
+.capitalize {
+  text-transform: capitalize;
+}
+@font-face {
+  font-family: 'ufontscomepisodei';
+  src: url('./ufontscomepisodei.eot');
+}
+/* use this class to attach this font to any element i.e. <p class="fontsforweb_fontid_68542">Text with this font applied</p> */
+.fontsforweb {
+  font-family: 'ufontscomepisodei' !important;
+}
+pre {
+    white-space: pre-wrap;       /* Since CSS 2.1 */
+    white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+    white-space: -pre-wrap;      /* Opera 4-6 */
+    white-space: -o-pre-wrap;    /* Opera 7 */
+    word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+.parameter-cell {
+  white-space: pre-wrap;       /* Since CSS 2.1 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
+}
+
+/* All css */
+.h3Border{
+  border-bottom: 1px solid #ddd;
+}
+
+/* My Css*/
+.search{
+  float: right;
+
+}
+
+.search button {
+  color: #fff;
+  font-size: 14px;
+  font-weight: 400;
+  padding: 3px 6px 3px 6px;
+  white-space: nowrap;
+  width:42px;
+  text-align: center;
+  cursor:pointer;
+  background-color: #29334F;
+  height: 34px;
+}
+
+.searchToken button{
+  font-size: 14px;
+  font-weight: 400;
+  white-space: nowrap;
+  text-align: center;
+  height: 32px;
+}
+
+.header{
+  z-index: 99;
+  background-color: #fff;
+  border-bottom: solid 2px #eee;
+}
+.navbar-nav{
+  float: right;
+  margin-right: 20px;
+}
+.navbar-nav>li>a{
+  color: #687074;
+  line-height: 20px;
+  font-size:13.5px;
+  font-weight: 400;
+  text-transform: uppercase;
+  border-bottom: 2px solid transparent;
+  bottom: -2px;
+
+}
+.nav.navbar-nav>li>a:hover{
+  box-sizing: border-box !important;
+  border-bottom: 2px solid #FF5600;
+}
+.nav-tabs>li>a {
+  border: 1px solid #ddd !important;
+}
+
+.dropdown-menu {
+  padding: 0;
+}
+
+.dropdown-menu li a{
+  padding: 12px 10px;
+  font-size: 13px;
+  width: 100%;
+  display: inline-block;
+}
+
+
+
+
+.navbar {
+  padding: 0 !important;
+}
+
+.mainmenu li {
+  display: inline;
+}
+
+.navbar {
+  margin: 0 !important;
+}
+
+.mainmenu li.active a{
+  box-sizing: border-box !important;
+  border-bottom: 2px solid #FF5600;
+}
+.dropdown-menu li p{
+  margin: 0;
+}
+.dropdown-menu li svg{
+  color: #FF5600;
+  margin: 2px 6px 0 0;
+  float: left;
+}
+
+.tokenBalances .dropdown-toggle {
+  background-color: #f7f7f7 !important;
+}
+
+.navbar-header {
+  margin-top: 10px;
+}
+
+.pixel p{
+  font-size: 20px;
+  text-transform: uppercase;
+  font-weight: bold;
+  font-family: 'Tandysoft';
+}
+
+.logo {
+  float: left;
+}
+
+.logo-text {
+  font-size: 36px;
+  color: #FF5600;
+  float: left;
+  /* costil */
+  margin-top: 7px;
+  
+}
+.nav .open>a {
+  border-color: #ffaa7f !important;
+  background-color: #eee !important;
+}
+.dropdown-menu>.active>a, 
+.dropdown-menu>.active>a:focus, 
+.dropdown-menu>.active>a:hover {
+  color: #333333 !important;
+  background-color: #eee !important;
+} 
+
+/*Body styles*/
+.profile-body{
+  min-height: 950px;
+  background: #f7f7f7;
+  padding:5px;
+}
+
+.cap-info{
+  height: 230px;
+  color: white;
+  background: #29334F;
+  padding: 20px;
+  margin-top: 10px;
+  font-weight: 400;
+  font-size: 17px;
+  line-height: .8;
+  text-align: center;
+  letter-spacing: 0.05em;
+  font-family: open sans,Arial,sans-serif;
+  text-transform: uppercase;
+  box-shadow: 0 10px 6px -6px #bbb;
+}
+.cap-info h4{
+  font-weight: 800;
+}
+.cap-info font{
+  color:#ACB3B3;
+  text-transform: lowercase;
+}
+
+.cap-info span a {
+  color: #FFFFFF;
+}
+
+.cap-info span a:hover, .cap-info .volume a {
+  text-decoration: none;
+  color:  #00008B;
+}
+
+
+
+.lastblock, .diff {
+  font-size: 16px;
+  margin-top: 20px;
+}
+.lastblock p,.diff p {
+  text-transform: none;
+}
+
+.chart-info{
+  border-right:2px solid #1F4C55;
+  border-left:2px solid #1F4C55;
+  box-shadow: 0 10px 6px -6px #bbb;
+  padding: 20px;
+  margin-top: 10px;
+  height: 230px;
+  background-color: white;
+}
+#highchart{
+  height: 180px;
+  display: block;
+}
+.marketcap,.volume,.supply{
+  margin-top: 20px;
+}
+.volume{
+  text-align: left;
+  
+}
+
+.supply{
+  text-align: right;
+}
+.fa-bitcoin{
+  margin-left: 12px;
+  float:left;
+  width: 45px !important;
+  height: 45px !important;
+}
+h3.titles{
+  font-weight: 400;
+  line-height: 1;
+  display: inline-block;
+  margin-left: 30px;
+}
+.recentTransactions h3,.recentblocks h3{
+  margin-left:30px;
+}
+.recentTransactions,.recentblocks{
+  background-color: white;
+}
+/* */
+.recentTransactions thead tr:first-child{
+  border-right:2px solid #FF5600;
+  border-left:2px solid #FF5600;
+}
+.recentTransactions tr:nth-child(2n){
+  border-left: 2px solid #e74c3c;
+  border-right: 2px solid #9b6bcc;
+}
+.recentTransactions tr:nth-child(2n+1){
+  border-left: 2px solid #9b6bcc;
+  border-right: 2px solid #e74c3c;
+}
+.recentblocks thead tr:first-child{
+  border-right:2px solid #FF5600;
+  border-left:2px solid #FF5600;
+}
+.recentblocks tr:nth-child(2n){
+  border-left: 2px solid #27d7e7;
+  border-right: 2px solid #f1c40f;
+}
+.recentblocks tr:nth-child(2n+1){
+  border-left: 2px solid #f1c40f;
+  border-right: 2px solid #27d7e7;;
+}
+.recentTransactions thead:hover,.recentblocks thead:hover{
+ background-color: rgb(41, 51, 79); 
+}
+.recentTransactions thead,.recentblocks thead{
+  color: rgb(255, 255, 255);
+  background-color: #29334F; 
+}
+.recentTransactions tr:hover,.recentblocks tr:hover{
+ background-color: #F0F0F0; 
+}
+
+/*Styles for block page*/
+.overview{
+  margin-left: 5px;
+  display: inline;
+  background: #ff7732;
+  color: white;
+  font-size: 15px;
+  padding: 5px 15px;
+}
+.block-heading h4{
+  border: 1px solid #ffb28b;
+  margin: 0;
+  padding: 10px;
+  min-height: 45px;
+  background: #ffaa7f;
+}
+.block-heading p{
+  font-weight: 400;
+  margin-top: 5px;
+  font-size: 13px;
+}
+.block-info{
+  padding:15px;
+  background: white;
+  font-size: 14px;
+  font-weight: 300;
+  line-height: 1.42;
+  border-top:2px solid #ffaa7f;
+  box-shadow: 0 1px 1px rgba(0,0,0,.05);
+}
+
+.block-info table td{
+  border: none !important;
+}
+.block-info tr:hover{
+  background-color: #F0F0F0;
+}
+
+
+
+.heightBLock > *{
+  display: inline-block;
+  margin: 0 5px 0 5px;
+} 
+
+.txblockheader {
+  font-size: 20px;
+  padding-left:3px;
+  color:#999999;
+  font-weight:200;
+  line-height:1.2;
+}
+
+/* Account Pages */
+.tokenBalances li {
+  list-style: none;
+}
+
+
+/* Richlist styles */
+#richlist h3 {
+  margin-left:5px;
+  font-weight:400;
+}
+#richlist h4 {
+  text-align:right;
+  font-weight:400;
+}
+
+
+
+
+
+
+
+
+
+
+
+/*Footer syles*/
+.footerTable td{
+  font-size: 13px;
+  padding: 2px;
+}
+.footer h4{
+  display: inline-block;
+  border-bottom: 2px solid #FF5600;
+}
+.footer{
+  color:#C0C0C0;
+  padding: 8px 0;
+  /*later will change*/
+  background-color: #29334F;
+  z-index: 99;
+  border-top: solid 2px #eee;
+}
+.dno{
+  padding-top: 10px;
+  height: 100%;
+  background-color: #1F4C55;
+  font-family: 'Open Sans',sans-serif;
+  color:#C0C0C0;
+  font-size: 11px;
+}
+/*Styles for address page*/
+
+.tab-content table{
+  padding: 15px;
+  margin-top: 1px;
+}
+
+.myclass{
+  font-size: 50px;
+  color:red;
+}
+span .label{
+  display: inline;
+  line-height: 1;
+  color: #fff;
+  text-align: center;
+  white-space: nowrap;
+  vertical-align: baseline;
+  font-size: 16px;
+  font-weight: 400;
+  padding: 2px;
+}
+.label-orange{
+  background: #e67e22;
+}
+.label-green{
+  background: #5cb85c;
+}
+.label-gold{
+   background:#DAA520;
+}
+.rounded{
+  border-radius:4px !important; 
+}
+
+#qrBlock img{
+  margin-top: 20px;
+  margin-left: 30px;
+  width:130px;
+  height:130px;
+}
+
+/* Styles for APIS page */
+.apis{
+  padding: 5px;
+}
+.api pre {
+  white-space: pre;
+  padding: 9.5px;
+  margin-top: 10px;
+  margin-left: 40px;
+  font-size: 14px;
+  line-height: 1.4;
+  color: #333;
+  word-break: break-all;
+  background-color: #f5f5f5;
+}
+.api pre a {
+  color: #555;
+}
+.api pre a:hover {
+  color: #3498db;
+}
+.apidocs strong{
+  font-size: 15px;
+  line-height: 1.6;
+}
+.apidocs {
+  margin-top: 15px; 
+  padding: 10px;
+}
+.apidocs p {
+  font-size: 15px;
+  line-height: 1.5;
+}
+
+
+.ellipsis {
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+
+.tokenTraker table{
+  margin-right: 10px;
+  font-size: 13px;
+}
+
+.fa.fa-bars {
+  width: 20px;
+  height: 20px;
+}
+
+.navbar-toggle {
+  padding: 5px;
+  align-items: flex-start;
+  text-align: center;
+  cursor: pointer;
+  border: 1px solid black;
+  margin-top: 10px;
+  width: 30px;
+  height: 30px;
+  background:  #ff9966;
+  border-radius: 0 0 !important; 
+}
+
+
+
+
+/* delete extra rows in table */
+
+/* account */
+
+
+.card {
+  margin-top: 15px;
+  margin-bottom: 15px;
+
+  /*border-radius: 4px;
+  border: 1px solid rgb(231, 234, 243);*/
+}
+
+.dropdown .availabelBalance {
+  width: 100%;
+  padding: 5px;
+}
+.dropdown .availabelBalance .col-xs-6 {
+  padding: 0 3px;
+}
+.dropdown .availabelBalance a{
+  cursor: pointer;
+  padding: 7px;
+}
+
+.tokenBalances li.list-custom {
+  margin: 0;
+  width:100%;
+  margin-bottom: .25rem;
+  border-bottom: 1px solid #e7eaf3;
+}
+
+.tokenlist button{
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #f7f7f7;
+  width: 100%;
+  height: 30px;
+}
+
+.tokenlist .caret{
+  /*justify-content: right;*/
+}
+
+ul.availabelBalane {
+  width: 100%;
+}
+
+/* tokens */
+.bold {
+  font-weight:bold;
+}
+
+.text-secondary {
+  font-size: 11px;
+  font-weight: 400;
+  color: #4a4f55;
+}
+
+.tokenCard table tr td:first-child{
+  width:200px;
+}
+
+.socialProfiles a{
+  margin-left: 8px;
+  color: #77838f;
+}
+
+/* /tokens page */
+.tokensHeader {
+  padding: 8px;
+  align-items: center;
+  justify-content: space-between;
+  display: flex;
+}
+.tokensHeader p {
+  color:#4a4f55; 
+  font-weight:600; 
+  font-size:14px; 
+  margin: 0;
+}
+
+.tokensList {
+  display: flex;
+  align-items: flex-start;
+}
+.tokensList img {
+  width: 18px;
+  margin-right: 5px;
+}
+.tokensList h5 {
+  margin-top:0;
+  margin-bottom: 5px;
+}
+
+/* /tokentxs page */
+/* /account page */
+
+.pagn-right {
+  justify-content: flex-end !important;
+}
+
+.pagn {
+  margin-top: -8px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+ul.pagination {
+  display: flex;
+  list-style: none;
+}
+ul.pagination li:last-child {
+  margin-right: 0px;
+}
+li.page-item {
+  margin-right: 5px;
+}
+li .page-link {
+  border-top-left-radius: .25rem;
+  border-bottom-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+  border-bottom-right-radius: .25rem;
+  transition: all .2s ease-in-out;
+}
+.page-item.disabled {
+  color: #8c98a4;
+  pointer-events: none;
+  cursor: auto;
+  border-color: #e7eaf3;
+}
+
+/* if something brock */
+.errorBlock {
+  text-align: center;
+  height: 200px;
+  padding: 20px 0;
+}
+
+.errorBlock .errorMsg {
+  font-size: 22px;
+  font-weight: 300;
+}
+
+/* /error page */
+.error {
+  text-align: center;
+}
+
+.mainError {
+  font-family: 'pixelFont';
+  font-size: 90px;
+}
+
+.richlistTable table{
+  margin-top:15px;
+}
+
+@font-face {
+  font-family: 'pixelFont';
+  src: url("/fonts/kek.ttf");
+}
+
+@font-face {
+  font-family: 'Tandysoft';
+  src: url('/fonts/PixelTandysoft.otf');
+}
+
+
+@media (max-width: 375px) {
+  /* all */
+  .row {
+    margin: 0;
+  }
+  .col-sm-6 {
+    padding-left: 5px;
+    padding-right: 5px;
+  }
+  .col-md-6 {
+    padding: 0;
+  }
+  .col-md-12 {
+    padding: 0;
+  }
+
+  .cap-info {
+    padding: 10px;
+    font-size: 15px;
+  }
+  table.block-info {
+    overflow-x: auto;
+  }
+
+  table.block-info td{
+    word-break: normal;
+    white-space: nowrap;
+  }
+  .pagn-right {
+    justify-content: center !important;
+  }
+  ul.pagination {
+    margin: 10px 0;
+  }
+
+  /* for rihclist */
+  .richlistTable table{
+    width: 100%;
+    margin-top: 0;
+    font-size:12px;
+  }
+  #richlist h4 {
+    text-align: left;
+  }
+  /* header */
+  .logo-text {
+    margin-top: 8px;
+    font-size:30px;
+  }
+  .navbar-header {
+    margin-top: 7px;
+  }
+  .navbar-form {
+    border: none;
+    margin-bottom: 0;
+  }
+  .navbar-header img{
+    margin-left: 10px;
+    width: 55px;
+    height: 50px;
+  }
+  .navbar-collapse ul.nav.navbar-nav.mainmenu a{
+    font-size: 12.5px;
+  }
+
+  /* footer */
+  footer {
+    margin-top: 10px;
+  }
+  .dno {
+    height: 100%;
+    font-size: 11px;
+    padding-top: 5px;
+  }
+
+  /* index */
+  h3.titles {
+    margin-top: 10px;
+    font-size: 18px;
+  }
+  .h3Border h3 {
+    font-size: 18px;
+  }
+  .recentTransactions {
+    overflow-x: scroll;
+  }
+  .recentTransactions table, .recentblocks table {
+    margin-bottom: 0 !important;
+  }
+
+  /* tokens */
+  .tokensHeader .navbar-form{
+    display: none !important;
+  }
+  .search form.navbar-form.navbar-right{
+    margin-top: 0 !important;
+  }
+  /* token */
+  .card {
+    width: 100%;
+    word-break: break-all;
+    white-space: normal !important;
+  }
+  .card table {
+    border: 1px solid #ddd;
+  }
+  /* account */
+  .accountAddress .h3Border h3 {
+    text-align: center;
+    font-size: 15px ;
+    word-break: break-word;
+  }
+  .accountAddress .h3Border span {
+    font-size: 14px;
+  }
+  .dropdown-menu li.list-custom.row a{
+    padding: 8px 8px;
+  }
+  .block-heading h4 {
+    font-size: 15px;
+  }
+  /* tokentx*/
+  .pagn {
+    margin-top: 0;
+    text-align: center;
+    justify-content: center !important;
+  }
+}
+
+.table>thead>tr>th {
+  border-bottom: none;
+}
+/* from 375 to 991 */
+@media (min-width: 475px) and (max-width: 991px) {
+  .header .navbar-nav {
+    float: left !important;
+    margin: 0 !important;
+  }
+}
+@media (max-width: 475px) {
+  .logo {
+    margin-top: 5px;
+  }
+  
+  .header .navbar-nav{
+    color: red;
+    margin: 0 0 5px;
+    float: none !important;
+  }
+  .mainmenu 
+  .mainmenu li a{
+    box-sizing: border-box !important;
+    border-bottom: 1px solid #ccc;
+  }
+  .mainmenu li.active a{
+    border-bottom: 1px solid #FF5600 !important;
+    box-sizing: border-box !important;
+    background-color: #ccc;
+  }
+  .mainmenu li a:hover{
+    border-bottom: 1px solid #FF5600 !important;
+    box-sizing: border-box !important;
+   
+  }
+
+  input#search {
+    width: 100% !important;
+  }
+  ul.dropdown-menu {
+    margin-left: 15px;
+    width:95% !important;
+  }
+  .dropdown-menu li a{
+    padding: 8px 8px !important;
+    font-size: 12px;
+    width: 100%;
+    display: inline-block;
+  }
+  .nav .open>a {
+    border-color: #FF5600 !important;
+  }
+
+  /* For account page */
+  .addressHead h3{
+    font-size: 18px;
+  }
+
+  #qrBlock {
+    display: none;
+  }
+
+  /* For Block page */
+  /* For Tx page */
+/*  .txblockheader h3 {
+    word-break: break-all; 
+    font-size: 17px;
+  }*/
+  table.block-info td{
+    word-break: break-all;
+    
+  }
+  .navbar-collapse.collapse.in,.navbar-collapse.collapsing {
+    padding: 2px !important;
+  }
+  .navbar-collapse.in.collapse#bs-expample .container,.navbar-collapse.collapsing .container {
+    padding: 0 !important;
+  }
+
+}

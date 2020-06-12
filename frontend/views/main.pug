@@ -1,0 +1,133 @@
+doctype html
+html(lang="en" prefix="og: http://ogp.me/ns#")
+  head
+    meta(charset='utf-8')
+    meta(http-equiv='X-UA-Compatible', content='IE=edge')
+    title Expanse (EXP) Blockchain Explorer 
+    meta(name='viewport', content='width=device-width, initial-scale=1.0')
+    meta(name='description', content='Expscan allows you to explore and search the Expscan blockchain for transactions, addresses, tokens, prices and other activities taking place on Expanse Network (EXP)')
+    meta(name='author', content='expscan.info')
+    meta(name='keywords', content='expanse, explorer, search, blockchain, crypto, currency, bitcoin')
+    link(rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous")  
+    link(rel='stylesheet', href='/css/main.css')
+    link(rel='icon' type='image/png' href="/img/logo.png" sizes="16x16")
+    link(href=href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet")
+    meta(property="og:locale", content="en")
+    meta(property="og:site_name", content="Expanse Explorer")
+    meta(property="og:title", content="Expanse BlockChain Explorer and Search")
+    meta(property="og:type" content="website")
+    meta(property="og:description", content="Fast and some featured explorer for Expanse.")
+    meta(property="og:image", content="")
+    script(type="text/javascript" async src="https://www.google-analytics.com/analytics.js")
+  body
+    .wrapper
+      .header
+        nav.navbar(role='navigation')
+          .container
+            .navbar-header
+              a(href='/' title='Home Page')
+                img(src='/img/expscan-logo.png' height='90px').logo
+              button.navbar-toggle.collapsed(type='button' data-toggle='collapse' data-target='#bs-expample' aria-expanded="false")
+                i.fa.fa-lg.fa-bars
+            
+            .search
+              form.navbar-form.navbar-right(action="/search", method="POST")
+                .input-group
+                  input.form-control#search(type='text', placeholder='Block / Tx / Address', name='search' style="width:330px")
+                  span.input-group-btn
+                    button.btn.btn-go(type='submit')
+                      i.fa.fa-search
+            .collapse.navbar-collapse#bs-expample
+              .container
+                ul.nav.navbar-nav.mainmenu
+                  li
+                    a(href='/') Home 
+                  li
+                    a(href='/richlist') Addresses
+                  li
+                    a(href='/charts') Charts
+                  //- 
+                  li
+                    a(href='/pending') Pending Tx
+                  li.dropdown
+                    a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+                      | Tools
+                      span.caret
+                    ul.dropdown-menu
+                      li
+                        a(href='/apis') 
+                          i.fa.fa-asterisk 
+                          p API
+                  li.dropdown
+                    a.dropdown-toggle(href='#', data-toggle='dropdown', role='button', aria-haspopup='true', aria-expanded='false')
+                      | Tokens
+                      span.caret
+                    ul.dropdown-menu
+                      li  
+                        a(href='/tokens') 
+                          i.fa.fa-eye
+                          p View Tokens
+                      li
+                        a(href='/tokenstxs') 
+                          i.fa.fa-exchange-alt
+                          p View Token Transfers
+
+      .container.profile-body      
+        block content
+      script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js')
+      script(src="https://code.highcharts.com/highcharts.src.js")
+      script(src='https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js', integrity='sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa', crossorigin='anonymous')
+      script(defer src="https://use.fontawesome.com/releases/v5.0.8/js/all.js")
+      script.
+        $(function () {
+          $('[data-toggle="tooltip"]').tooltip()
+        })
+      //- top
+    footer
+      .footer
+        .container
+          .row
+            .col-md-8
+              img(src='/img/logo.png' width='55px' height='50px')
+              h4 Powered by eCorp 
+              
+            .col-md-4
+              h4.hidden-xs Links
+              table.footerTable
+                tbody
+                  tr
+                    td 
+                      i.fa.fa-envelope
+                    td 
+                      a(href="dinc@gmail.com") Contact US
+                  tr
+                    td 
+                      i.fab.fa-twitter
+                    td 
+                      a(href="https://twitter.com/dinc334") Twitter 
+                  tr
+                    td 
+                      i.fa.fa-users
+                    td 
+                      a(href="https://www.expanse.tech") About US
+                  tr
+                    td 
+                      i.fa.fa-code
+                    td
+                      a(href="/apis") API
+
+      .dno(style='margin-bottom: -8px;')  
+        .container
+          .row
+            .col-md-9  
+              | Expscan @ 2019 (A) 
+              p Address for donations: 0xd5a1a07d033169cfeda8ab7482d7006c5ea5e72a
+              p Running
+                a(href="https://github.com/expanse-org/go-expanse/releases") 
+                  span Gexp
+                span(style='margin-left: 5px') Number of Peers Connected #{peers}
+  script(src='/js/index.js')
+  noscript If you're seeing this message, that means <strong>JavaScript has been disabled on your browser</strong>, please <strong>enable JS</strong> to make this app work.
+
+
+            

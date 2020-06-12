@@ -1,0 +1,255 @@
+extends main
+
+block content
+  .container
+    .accountAddress
+      .h3Border
+        h3 Address: 
+          if account
+            span #{account.address}
+          else
+            span #{address}
+        //- if account.isContract
+        //-   h3 Contract #{account.address}
+  .container
+    if account
+      .col-md-6
+        .card
+          table.table
+            thead
+              tr
+                td.bold Overview
+                td
+            tbody
+              tr
+                td EXP Balance:
+                td #{formatNumber(account.balance_EXP)} Exp
+              tr
+                td EXP USD Value:
+                //- balance * current price
+                td(style="line-height:1.42") $#{formatNumber((account.balance_EXP)*priceEXP.price_usd)} 
+                  font(style="position:relative; top:-1px") (@ $#{Number(priceEXP.price_usd).toFixed(2)}/EXP)
+              tr 
+                td Transactions:
+                td
+                  span #{count} txns
+              if account.balance_PEX || account.balance_LAB
+                tr
+                  td Token:
+                  td.tokenBalances
+                    .dropdown.tokenlist
+                      button.btn.btn-default.dropdown-toggle(type='button' data-toggle='dropdown') $#{(priceLAB.price_usd*account.balance_LAB).toFixed(3)}
+                        span.caret
+                      ul.dropdown-menu.availabelBalance(style='max-height:250px; overflow-y: scroll;')
+                        if account.balance_LAB
+                          li.list-custom.row
+                            a(href='/token/0XA887ADB722CF15BC1EFE3C6A5D879E0482E8D197') 
+                              .col-xs-6
+                                p
+                                  img(src='/img/tokens/tokenlab.png' width='15px')
+                                  i(style='margin-left: 5px') Tokenlab
+                                span.list-amount
+                                  | #{new Intl.NumberFormat('us-US').format((account.balance_LAB))} LAB
+                              .col-xs-6.text-right
+                                p $#{(priceLAB.price_usd*account.balance_LAB).toFixed(3)}
+                                p @0.02$
+                        if account.balance_PEX
+                          li.list-custom.row
+                            a(href='/token/0X0CC6177EA69B0F1C2415043AC81CCD8F77D0C1A9')
+                              .col-xs-6
+                                p
+                                  img(src='/img/tokens/expex.png' width='15px')
+                                  i(style='margin-left: 5px') Pex
+                                span.list-amount
+                                  | #{new Intl.NumberFormat('us-US').format((account.balance_PEX))} PEX
+                              .col-xs-6.text-right
+    else
+      .errorBlock
+        img(src='/img/hacking.png')
+        p.errorMsg Sorry, We are unable to find this account Address.   
+        p #{reason}                 
+    .col-md-6
+      .card
+        #qrBlock
+  if account
+    .container
+      div
+        ul.nav.nav-tabs#nav-tab(role='tablist')
+          li.active(role='presentation')
+            a(href='#transactions', aria-controls='transactions', role='tab', data-toggle='tab' style="margin-left:5px") Transactions
+          if txsTokens.length > 0
+            li(role='presentation')
+              a(href='#tokentxns', aria-controls = 'tokentxns',aria-selected='false' role = 'tab', data-toggle = 'tab') Erc20 Tokens Txs
+          if minedBlocks.length > 0
+            li(role='presentation')
+              a(href='#minedBlocks', aria-controls = 'minedBlocks', aria-selected='false' role = 'tab', data-toggle = 'tab') Mined Blocks
+      
+        .tab-content
+          #transactions.tab-pane.active(role='tabpanel')
+            .block-heading
+              h4 Recent Transactions
+                if count > 100
+                  p Latest 100 txns from a total Of #{count} transactions
+                else
+                  p Latest #{count} txns
+            .table-responsive
+              table.table.block-info
+                thead
+                  tr
+                    th.hidden-xs.hidden-sm TxHash
+                    th.hidden-xs.hidden-sm Block
+                    th.col-md-2(style = '') Age
+                    th.col-md-2(style = '') From
+                    th.col-md-1(style = '') 
+                    th.col-md-2 To
+                    th.col-md-2 Value 
+                    th.col-md-1(style = '').hidden-xs.hidden-sm
+                      font(color='#ACB3B3') [TxFee] 
+                tbody
+                  for tx in transactions  
+                    tr
+                      td.hidden-xs.hidden-sm
+                        a(href ='/tx/' + tx.hash) #{tx.hash.substr(0,15)}...
+                      td.hidden-xs.hidden-sm
+                        a(href = '/block/' + tx.blockNumber) #{tx.blockNumber}
+                      td #{calcFunc.calcDate(tx.timestamp)}
+                      td
+                        if tx.from === account.address
+                          if check.checkAddress(tx.from,true).includes('0x')
+                            | #{check.checkAddress(tx.from,true).substr(0,20)}...
+                          else 
+                            | #{check.checkAddress(tx.from,true)}
+                        else
+                          if check.checkAddress(tx.from,true).includes('0x')
+                            a(href="/account/" + tx.from) #{check.checkAddress(tx.from,true).substr(0,20)}...
+                          else  
+                            a(href="/account/" + tx.from) #{check.checkAddress(tx.from,true)}
+                      td
+                        if tx.from === account.address
+                          span.label.label-orange.rounded OUT
+                        else
+                          span.label.label-green.rounded IN
+                      td
+                        if tx.to === account.address
+                          if check.checkAddress(tx.to,true).includes('0x')
+                            | #{check.checkAddress(tx.to,true).substr(0,20)}...
+                          else 
+                            | #{check.checkAddress(tx.to,true)}
+                        else
+                          if check.checkAddress(tx.to,true).includes('0x')
+                            a(href="/account/" + tx.to) #{check.checkAddress(tx.to,true).substr(0,20)}...
+                          else  
+                            a(href="/account/" + tx.to) #{check.checkAddress(tx.to,true)}
+                      td #{Number((ethformatter(tx.value)).split(" ")[0]).toFixed(4)} Exp
+                      td.hidden-xs.hidden-sm 
+                        font(color='#ACB3B3') #{(tx.gas*tx.gas_price)/Math.pow(10,18)}
+              .pagn.pagn-right
+                ul.pagination
+                  if page == 1
+                    li.page-item.disabled
+                      a.page-link(href="/account/"+account.address+"?p=1") First
+                    li.page-item.disabled(title='Go to Previous')
+                      a.page-link(href="/account/"+account.address+"?p=" + (page - 1))
+                        img(src='/img/chevron-left.png' width='10px' color='red')
+                  else
+                    li.page-item
+                      a.page-link(href="/account/"+account.address+"?p=1") First
+                    li.page-item(title='Go to Previous')
+                      a.page-link(href="/account/"+account.address+"?p=" + (page - 1)) 
+                        img(src='/img/chevron-left.png' width='10px')
+                  li.page-item.disabled
+                    if count > 1000000
+                      a.page-link #{page} of 1000 
+                    else
+                      a.page-link #{page} of #{(Math.round(count/1000)*10) || 1} 
+                  if page == ((Math.floor(count/1000)*10) || 1)
+                    li.page-item.disabled(title='Go to Next')
+                      a.page-link(href="/account/"+account.address+"?p=" + (page + 1))
+                        img(src='/img/chevron-right.png' width='10px')
+                    li.page-item.disabled
+                      a.page-link(href="/account/"+account.address+"?p="+ Math.floor(count/1000)*10) Last
+                  else   
+                    li.page-item(title='Go to Next')
+                      a.page-link(href="/account/"+account.address+"?p=" + (page + 1))
+                        img(src='/img/chevron-right.png' width='10px')
+                    li.page-item
+                      a.page-link(href="/account/"+account.address+"?p="+ Math.floor(count/1000)*10) Last
+          if minedBlocks
+            #minedBlocks.tab-pane.fade(role='tabpanel')
+              .block-heading
+                h4 Latest 100 blocks 
+              .table-responsive
+                table.table.block-info
+                  thead
+                    tr
+                      th Block
+                      th Age
+                      th Transaction
+                      th Difficulty
+                      th GasUsed
+                  tbody
+                    for block in minedBlocks
+                      tr
+                        td
+                          a(href='/block/'+block.number) #{block.number}
+                        td 
+                          | #{calcFunc.calcDate(block.timestamp)}
+                        td
+                          | #{block.tx_count}
+                        td
+                          | #{(block.difficulty/Math.pow(10,12)).toFixed(2)} TH
+                        td
+                          | #{formatNumber(block.gasUsed)}
+
+          if txsTokens
+            #tokentxns.tab-pane.fade(role='tabpanel')
+              .block-heading
+                h4 Latest #{txsTokens.length} Erc20 Token Transfer Events
+              .table-responsive
+                table.table.block-info
+                  thead
+                    tr
+                      th TxHash
+                      th Age
+                      th Block
+                      th From
+                      th
+                      th To
+                      th Value 
+                      th Token
+                  tbody
+                    for tx in txsTokens  
+                      tr
+                        td
+                          a(href ='/block/' + tx.blockNumber) #{tx.blockHash.substr(0,20)}...
+                        td
+                          | #{calcFunc.calcDate(tx.timestamp)}
+                        td
+                          a(href = '/block/' + tx.blockNumber) #{tx.blockNumber}
+                        td
+                          a(href="/account/" + tx.from) #{check.checkAddress(tx.from,true)}
+                        td
+                          if tx.from === account.address
+                            span.label.label-orange.rounded OUT
+                          else
+                            span.label.label-green.rounded IN
+                        td    
+                          a(href="/account/" + tx.to) #{check.checkAddress(tx.to,true)}
+                        td #{tx.value} 
+                        td(style='display: flex; align-items: center;') 
+                          if tx.token == "LAB" 
+                            img(style='margin-right:4px' src='/img/tokens/tokenlab.png' width='14px')
+                            a(href='/token/0xa887adb722cf15bc1efe3c6a5d879e0482e8d197' ) #{tx.token}
+                          else
+                            img(style='margin-right:4px' src='/img/tokens/expex.png' width='14px')
+                            a(href='/token/0x0cc6177ea69b0f1c2415043ac81ccd8f77d0c1a9') #{tx.token}
+      
+  script(src='/js/qrcode.js')
+  script.
+    var qrString = document.getElementById("qr").innerHTML.split(" ");
+    var qr = qrcode(4, 'L');
+    qr.addData(qrString[1]);
+    qr.make();
+    document.getElementById('qrBlock').innerHTML = qr.createImgTag();
+
+    

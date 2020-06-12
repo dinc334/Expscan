@@ -1,0 +1,81 @@
+extends main
+
+block content
+  .row
+    .col-sm-6
+      .cap-info
+        i.icon-globe
+        .marketcap
+          p MARCKET CAP: 
+            span(style='font-weight:600') #{formatNumber(price.marketcap)} $
+        .price
+          | #{Number(price.price_usd).toFixed(2)} $ #{Number(price.price_btc).toFixed(7)} BTC/EXP
+        .row(style='margin-top:10px')
+          .col-xs-6.volume 
+            p Volume 
+            span(style='font-weight:600') #{formatNumber(price.volume)}$
+            .lastblock
+              p Last Block
+              a(href='/block/' + blocks[0].number, style = 'color:white' data-toggle='tooltip' data-placement='bottom' title = "The latest block No") #{blocks[0].number}
+              font   (#{blocks[0].timestamp - blocks[1].timestamp}s)
+          .col-xs-6.supply
+            p Total Supply 
+            span(style='font-weight:600') #{formatNumber(price.supply)} EXP 
+            .diff 
+              p Difficulty
+              span
+                a(href='/charts' data-toggle="tooltip" data-placement='left' title="View Difficulty Growth Chart") #{((blocks[0].difficulty)/Math.pow(10,12)).toFixed(2)} TH
+            
+
+    .col-sm-6
+      .chart-info.box-shadow
+        #highchart
+  //- 
+  h3.titles Recent blocks
+  .recentblocks
+    table.table
+      thead
+        tr
+          th Height
+          th.address.hidden-xs.hidden-sm Miner
+          th Timestamp
+          th Txn
+          th GasUsed
+      tbody
+        for block in blocks
+          tr
+            td
+              a(href="/block/" + block.number) #{block.number}
+            td.hidden-xs.hidden-sm 
+              a(href="/account/" + block.miner) #{block.miner} 
+              span  #{check.checkAddress(block.miner)}
+            td #{calcFunc.calcDate(block.timestamp)}
+            td #{block.tx_count}
+            td #{block.gasUsed}
+  h3.titles Recent Transactions
+  .recentTransactions
+    if txs.length === 0
+      p No transactions during the last 10 blocks
+    else
+      table.table
+        thead
+          tr
+            th Hash
+            th From
+            th.hidden-xs.hidden-sm To
+            th Amount
+        tbody
+          for tx in txs
+            tr
+              td
+                a(href="/tx/" + tx.hash) #{tx.hash.substr(0,10)}...
+              td
+                a(href="/account/"+ tx.from) #{tx.from} 
+                span #{check.checkAddress(tx.from)}            
+              td.hidden-xs.hidden-sm
+                a(href="/account/"+ tx.to) #{tx.to} 
+                span #{check.checkAddress(tx.to)}
+             
+              td #{ethformatter(tx.value)}
+    script(src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.1.1/jquery.js')
+    script(src='/js/mainChart.js')
