@@ -56,7 +56,7 @@ module.exports = function (sequelize, DataTypes) {
     },
     sha3Uncle: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
     },
     totalDifficulty: {
       type: DataTypes.STRING,

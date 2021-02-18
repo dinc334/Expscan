@@ -6,10 +6,8 @@ const contracts = require('../data/contracts.json')
 const ABI = require('../data/ABI.json')
 const getMissingBlocks = require('./parseGexp.js')
 
-const labABI = require('../data/labABI.json')
-
 const {
-  Blocks, Transactions, Addresses, TxsTokens, Contracts, Tokens,
+  Blocks, Transactions, Addresses, TxsTokens, Contracts,
 } = require('../models')
 
 const { formatAmount } = require('./ethformatter.js')
@@ -18,26 +16,18 @@ const { web3Http } = require('../config/config-server.json')
 web3.setProvider(new web3.providers.HttpProvider(web3Http))
 
 const decoder = new InputDataDecoder(ABI)
-
-// file with list of contract address
 const tokenlab = new web3.eth.Contract(ABI, contracts.tokenlab.address)
 const pex = new web3.eth.Contract(ABI, contracts.pex.address)
 
-// Dop Info
-// 903578 - bug
-// 922388 - LAB transfers
-
 // listenBlocks - get all latest blocks
-
 async function main() {
   const data = await web3.eth.getBlock('latest')
-  const latestInDbBlock = await Blocks.max('number')
+  const latestDbBlock = await Blocks.max('number') || 0
 
-  if (data.number !== latestInDbBlock + 1) {
-    console.log('Start to catching missing blocks and sync')
-    const numberOfMissing = data.number - latestInDbBlock + 1
+  if (data.number !== latestDbBlock + 1) {
+    const numberOfMissing = data.number - latestDbBlock + 1
     console.log(`Number of missing blocks is: ${numberOfMissing}`)
-    getMissingBlocks(latestInDbBlock + 1, data.number)
+    getMissingBlocks(latestDbBlock + 1, data.number)
     // update balance of missing blocks
     // listenBlocks()
     console.log('All done, know just sync')
@@ -47,8 +37,8 @@ async function main() {
   }
 }
 
-main()
-listenBlocks()
+main() // parse from 0 to latest 0 -> 100
+// listenBlocks() // parse from latest to all new 100 -> all new
 
 async function listenBlocks() {
   const data = await web3.eth.getBlock('latest')
@@ -75,7 +65,7 @@ async function listenBlocks() {
       console.log('======= Create new Block issue (sync.js)===============')
       console.log(e)
     }
-    if (data.transactions.length != 0) {
+    if (data.transactions.length !== 0) {
       const txs = data.transactions
       for (const tx of txs) {
         const transaction = await web3.eth.getTransaction(tx)
@@ -171,7 +161,7 @@ async function createTxsToken(transaction, timestamp, tokenName) {
       // update sender token balance
 
       console.log(`--- Write ${tokenName} transfer`)
-      if (tokenName == 'LAB') {
+      if (tokenName === 'LAB') {
         const balanceLAB = await getTokenBalance(transaction.from, tokenlab, labAddr)
         await Addresses.update({
           balance_LAB: balanceLAB,
@@ -233,17 +223,3 @@ async function saveContract(hash) {
 // 	// 0.5169572615
 // 	// 0.5136815598
 // })
-
-// async function tests() {
-// 	// let block = await web3.eth.getBlock(903579);
-// 	// for(let i = 0; i< block.transactions.length; i++) {
-// 	// 	let tx = await web3.eth.getTransaction(block.transactions[i]);
-// 	// 	console.log(tx)
-// 	// }
-// 	let bug = '0x9be1da9eedf254a4940ea0a7e5f1c05e289cc7f63e2d8514e0a319c22c4a5477'
-// 	let bugTx = await web3.eth.getTransaction(bug);
-// 	let data = bugTx.to ? bugTx.to.toLowerCase() : await saveContract(bug);
-// 	console.log(data)
-// }
-
-// tests()
