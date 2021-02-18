@@ -1,40 +1,38 @@
-"use strict";
-
-module.exports = function(sequelize, DataTypes) {
-  var Addresses = sequelize.define('Addresses', {
+module.exports = function (sequelize, DataTypes) {
+  const Addresses = sequelize.define('Addresses', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     address: {
       type: DataTypes.STRING,
       allowNull: false,
-      unique: true
+      unique: true,
     },
     balance_EXP: {
       type: DataTypes.BIGINT,
-      allowNull:  true
+      allowNull: true,
     },
     balance_LAB: {
       type: DataTypes.BIGINT,
-      allowNull: true
+      allowNull: true,
     },
     balance_PEX: {
       type: DataTypes.BIGINT,
-      allowNull: true
+      allowNull: true,
     },
     last_active: {
       type: DataTypes.BIGINT,
-      allowNull: true
+      allowNull: true,
     },
     count: {
       type: DataTypes.BIGINT,
-      allowNull: true
-    }
+      allowNull: true,
+    },
   }, {
-    tableName: 'addresses', timestamps : false
-  });
+    tableName: 'addresses', timestamps: false,
+  })
 
-  return Addresses;
-};
+  return Addresses
+}

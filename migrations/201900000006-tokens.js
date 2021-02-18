@@ -1,36 +1,33 @@
-"use strict";
-
 module.exports = {
-	up: (queryInterface, Sequelize) => {
-		return queryInterface.createTable('tokens', {
-			id: {
-				type: Sequelize.INTEGER,
-				primaryKey: true,
-				autoIncrement: true,
-			},
+  up: (queryInterface, Sequelize) => queryInterface.createTable('tokens', {
+    id: {
+      type: Sequelize.INTEGER,
+      primaryKey: true,
+      autoIncrement: true,
+    },
 	    ticker: {
 	      type: Sequelize.STRING,
-	      allowNull: false
+	      allowNull: false,
 	    },
 	    name: {
 	      type: Sequelize.STRING,
-	      allowNull: false
+	      allowNull: false,
 	    },
 	    website: {
 	      type: Sequelize.STRING,
-	      allowNull: true
+	      allowNull: true,
 	    },
 	    description: {
 	    	type: Sequelize.TEXT,
-	    	allowNull: true
+	    	allowNull: true,
 	    },
 	    holders: {
 	      type: Sequelize.STRING,
-	      allowNull: true
+	      allowNull: true,
 	    },
 	    transfers: {
 	      type: Sequelize.STRING,
-	      allowNull: true
+	      allowNull: true,
 	    },
 	    twitter: {
 	      type: Sequelize.STRING,
@@ -38,32 +35,28 @@ module.exports = {
 	    },
 	    cmc: {
 	      type: Sequelize.STRING,
-	      allowNull: true
+	      allowNull: true,
 	    },
 	    bitcointalk: {
 	      type: Sequelize.STRING,
-	      allowNull: true
+	      allowNull: true,
 	    },
 	    decimals: {
 	      type: Sequelize.INTEGER,
-	      allowNull: false
+	      allowNull: false,
 	    },
 	    totalSupply: {
 	      type: Sequelize.BIGINT,
-	      allowNull: true
+	      allowNull: true,
 	    },
 	    type: {
 	      type: Sequelize.STRING,
-	      allowNull: false
+	      allowNull: false,
 	    },
 	    address: {
 	    	type: Sequelize.STRING,
-	    	allowNull: true
-	    }
-		})
-	},
-	down: (queryInterface, DataTypes) => {
-		return queryInterface.dropTable('tokens')
-	}
+	    	allowNull: true,
+	    },
+  }),
+  down: (queryInterface, DataTypes) => queryInterface.dropTable('tokens'),
 }
-

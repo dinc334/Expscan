@@ -1,19 +1,16 @@
-'use strict';
-
 module.exports = {
-  up: function(queryInterface, Sequelize) {
+  up(queryInterface, Sequelize) {
     return queryInterface.addColumn(
       'addresses',
       'count',
-     	Sequelize.BIGINT
-    );
-
+     	Sequelize.BIGINT,
+    )
   },
 
-  down: function(queryInterface, Sequelize) {
+  down(queryInterface, Sequelize) {
     return queryInterface.removeColumn(
       'addresses',
-      'count'
-    );
-  }
+      'count',
+    )
+  },
 }
