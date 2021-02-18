@@ -1,6 +1,7 @@
 const rp = require('request-promise')
 const cron = require('node-cron')
 const Web3 = require('web3')
+const { Op } = require('sequelize')
 
 const { Prices, Tokens } = require('../models')
 const CONFIG = require('../config/config-server.json')
@@ -44,6 +45,18 @@ async function getBtcPrice() {
   return btcData.bitcoin.usd
 }
 
+async function updateTokensCaps() {
+  const allTokens = await Prices.findAll({ where: { ticker: { [Op.ne]: 'BTC' } } })
+  allTokens.forEach(async (token) => {
+    const tokenSupply = await Tokens.findOne({ where: { ticker: token.ticker } })
+    await Prices.update({
+      marketcap:
+        (token.price_usd * tokenSupply.totalSupply),
+    }, { where: { ticker: token.ticker } })
+  })
+  console.log('Update Tolen Caps')
+}
+
 async function initPrice() {
   const expData = await getExpData()
   const btcPrice = await getBtcPrice()
@@ -57,6 +70,30 @@ async function initPrice() {
     ticker: 'BTC',
     price_btc: 1,
     price_usd: btcPrice,
+  }, {
+    ticker: 'LAB',
+    price_usd: 0.012,
+    price_btc: btcPrice / 0.012,
+  }, {
+    ticker: 'PEX',
+    price_usd: 0.0001,
+    price_btc: btcPrice / 0.001,
+  }, {
+    ticker: 'EGG',
+    price_usd: 0.002,
+    price_btc: btcPrice / 0.002,
+  }, {
+    ticker: 'LOVE',
+    price_usd: 0.096,
+    price_btc: btcPrice / 0.096,
+  }, {
+    ticker: 'T64',
+    price_usd: 174,
+    price_btc: btcPrice / 174,
+  }, {
+    ticker: 'PRM',
+    price_usd: 0.0033,
+    price_btc: btcPrice / 0.0033,
   }]
   try {
     await Prices.bulkCreate(allData)
@@ -86,6 +123,7 @@ async function mainUpdate() {
       totalSupply: expData.supply,
     }, { where: { ticker: 'EXP' } })
     console.log('Prices-data updated.')
+    await updateTokensCaps()
   } catch (e) {
     console.log(e)
     console.log('Error during updating Prices')

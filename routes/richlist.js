@@ -42,43 +42,6 @@ router.get('/', async (req, res) => {
   })
 })
 
-// router.get('/tokenlab', async (req, res) => {
-//   let id = 1
-//   let page = req.query.p || 1
-//   page = Number(page)
-//   if (page !== 1) id += (page * 100) - 100
-
-//   const count = await Addresses.count({
-//     where: { balance_LAB: { [Op.ne]: null }, balance_LAB: { [Op.ne]: 0 } },
-//   })
-
-//   const addresses = await Addresses.findAll({
-//     where: { balance_LAB: { [Op.ne]: null }, balance_LAB: { [Op.ne]: 0 } },
-//     order: [['balance_LAB', 'DESC']],
-//     offset: ((100 * page) - 100),
-//     limit: 100,
-//   })
-//   // based on count calc limit
-//   if (count > 1000) {
-//     var limit = Math.floor(count / 1000) * 10
-//   } else {
-//     var limit = 1
-//   }
-//   if (page > limit) return res.redirect('/error')
-
-//   const { totalSupply } = await Tokens.findOne({
-//     where: { ticker: 'LAB' },
-//   })
-//   return res.render('richlist', {
-//     count,
-//     page,
-//     addresses,
-//     lab: true,
-//     totalSupply,
-//     id,
-//   })
-// })
-
 router.get('/:tokenName', async (req, res) => {
   let id = 1
   let page = req.query.p || 1
