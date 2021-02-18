@@ -74,6 +74,7 @@ async function mainUpdate() {
     return
   }
   const expData = await getExpData()
+  console.log('Update')
   try {
     await Prices.update({
       price_usd: expData.priceUSD,

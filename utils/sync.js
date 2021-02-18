@@ -1,3 +1,4 @@
+/* eslint-disable no-await-in-loop */
 const Web3 = require('web3')
 const InputDataDecoder = require('ethereum-input-data-decoder')
 

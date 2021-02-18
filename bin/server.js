@@ -33,7 +33,7 @@ app.locals.hexToString = require('../utils/hexToString.js')
 
 app.use('/', require('../routes/index'))
 // change to admin/v1 api
-app.use('/admin/api', require('../routes/adminApi'))
+app.use('/admin/api', require('../routes/chartApi'))
 //
 app.use('/block', require('../routes/block'))
 app.use('/tx', require('../routes/tx'))

@@ -1,63 +1,44 @@
+/* eslint-disable no-await-in-loop */
 const Web3 = require('web3')
 
 const web3 = new Web3()
 
 const {
-  Blocks, Transactions, Addresses, Supplies, TxsTokens, Contracts,
+  Blocks, Transactions, Addresses, Contracts,
 } = require('../models')
 
 const { formatDB } = require('./ethformatter.js')
+const CONFIG = require('../config/config-server.json')
 
-web3.setProvider(new web3.providers.HttpProvider('http://localhost:9656'))
+web3.setProvider(new web3.providers.HttpProvider(CONFIG.web3Http))
 
-const ABI = [{
-  constant: true, inputs: [], name: 'name', outputs: [{ name: '', type: 'string' }], payable: false, type: 'function',
-}, {
-  constant: false, inputs: [{ name: '_spender', type: 'address' }, { name: '_value', type: 'uint256' }], name: 'approve', outputs: [{ name: 'success', type: 'bool' }], payable: false, type: 'function',
-}, {
-  constant: true, inputs: [], name: 'totalSupply', outputs: [{ name: '', type: 'uint256' }], payable: false, type: 'function',
-}, {
-  constant: false, inputs: [{ name: '_from', type: 'address' }, { name: '_to', type: 'address' }, { name: '_value', type: 'uint256' }], name: 'transferFrom', outputs: [{ name: 'success', type: 'bool' }], payable: false, type: 'function',
-}, {
-  constant: true, inputs: [], name: 'decimals', outputs: [{ name: '', type: 'uint8' }], payable: false, type: 'function',
-}, {
-  constant: true, inputs: [], name: 'version', outputs: [{ name: '', type: 'string' }], payable: false, type: 'function',
-}, {
-  constant: true, inputs: [{ name: '_owner', type: 'address' }], name: 'balanceOf', outputs: [{ name: 'balance', type: 'uint256' }], payable: false, type: 'function',
-}, {
-  constant: true, inputs: [], name: 'symbol', outputs: [{ name: '', type: 'string' }], payable: false, type: 'function',
-}, {
-  constant: false, inputs: [{ name: '_to', type: 'address' }, { name: '_value', type: 'uint256' }], name: 'transfer', outputs: [{ name: 'success', type: 'bool' }], payable: false, type: 'function',
-}, {
-  constant: false, inputs: [{ name: '_spender', type: 'address' }, { name: '_value', type: 'uint256' }, { name: '_extraData', type: 'bytes' }], name: 'approveAndCall', outputs: [{ name: 'success', type: 'bool' }], payable: false, type: 'function',
-}, {
-  constant: true, inputs: [{ name: '_owner', type: 'address' }, { name: '_spender', type: 'address' }], name: 'allowance', outputs: [{ name: 'remaining', type: 'uint256' }], payable: false, type: 'function',
-}, { inputs: [{ name: '_initialAmount', type: 'uint256' }, { name: '_tokenName', type: 'string' }, { name: '_decimalUnits', type: 'uint8' }, { name: '_tokenSymbol', type: 'string' }], payable: false, type: 'constructor' }, { payable: false, type: 'fallback' }, {
-  anonymous: false, inputs: [{ indexed: true, name: '_from', type: 'address' }, { indexed: true, name: '_to', type: 'address' }, { indexed: false, name: '_value', type: 'uint256' }], name: 'Transfer', type: 'event',
-}, {
-  anonymous: false, inputs: [{ indexed: true, name: '_owner', type: 'address' }, { indexed: true, name: '_spender', type: 'address' }, { indexed: false, name: '_value', type: 'uint256' }], name: 'Approval', type: 'event',
-}]
+const ABI = require('../data/ABI644.json')
 
 const tokenlab = new web3.eth.Contract(ABI, '0xa887adb722cf15bc1efe3c6a5d879e0482e8d197')
 const pex = new web3.eth.Contract(ABI, '0x0cc6177ea69b0f1c2415043ac81ccd8f77d0c1a9')
 
-async function main() {
-  const latestBlock = await web3.eth.getBlock('latest')
-  console.log('Initial Parsing')
-  // await getMissingBlocks(2108382, 2108389)
-  console.log('Getting Balance')
-  await updateBalances()
-  console.log('Get all balance succes')
+async function saveContract(hash) {
+  const data = await web3.eth.getTransactionReceipt(hash)
+  console.log(data)
+  try {
+    await Contracts.create({
+      hash,
+      contractAddress: data.contractAddress.toLowerCase(),
+      creator: data.from.toLowerCase(),
+    })
+    console.log('New contract written')
+  } catch (e) {
+    console.log(e)
+    console.log('Internal DB error (contracts)')
+  }
+  return data.contractAddress.toLowerCase()
 }
 
-// main()
-
 async function getMissingBlocks(fromBlock, toBlock) {
-  console.log(`Start parsing from ${fromBlock} to ${toBlock}`)
   for (let i = fromBlock + 1; i < toBlock; i++) {
     const data = await web3.eth.getBlock(i)
     try {
-      const block = await Blocks.create({
+      await Blocks.create({
         number: data.number,
         hash: data.hash.toLowerCase(),
         extraData: data.extraData,
@@ -78,9 +59,10 @@ async function getMissingBlocks(fromBlock, toBlock) {
       console.log(e)
       console.log('======= Create new Block issue ===============')
     }
-    if (data.transactions.length != 0) {
+    if (data.transactions.length !== 0) {
       const txs = data.transactions
       const results = []
+      // eslint-disable-next-line no-restricted-syntax
       for (const tx of txs) {
         // current 1 tx
         const transaction = await web3.eth.getTransaction(tx)
@@ -98,15 +80,22 @@ async function getMissingBlocks(fromBlock, toBlock) {
           hash: tx,
         }, { returning: false }))
         if (transaction.to) {
-          await Addresses.create({
-            address: transaction.to.toLowerCase(),
-            last_active: data.timestamp,
-          }, { returning: false })
+          try {
+            await Addresses.create({
+              address: transaction.to.toLowerCase(),
+              last_active: data.timestamp,
+            }, { returning: false })
+          } catch (e) {
+            await Addresses.update({
+              last_active: data.timestamp,
+            }, { where: { address: transaction.to.toLowerCase() } })
+          }
         }
       }
       try {
         await Promise.all(results)
       } catch (e) {
+        console.log('Cannot save all txs in promise all')
       }
     }
   }
@@ -146,22 +135,24 @@ function getTokenBalance(address, tokenName, contractAddress) {
   })
 }
 
-async function saveContract(hash) {
-  const data = await web3.eth.getTransactionReceipt(hash)
-  console.log(data)
-  try {
-    // test variant
-    await Contracts.create({
-      hash,
-      contractAddress: data.contractAddress.toLowerCase(),
-      creator: data.from.toLowerCase(),
-    })
-    console.log('New contract written')
-  } catch (e) {
-    console.log(e)
-    console.log('Internal DB error (contracts)')
+async function main() {
+  const latestChainBlock = await web3.eth.getBlock('latest')
+  const latestDbBlock = await Blocks.max('number') || 0
+  if (latestChainBlock.number !== latestDbBlock) {
+    console.log(`Start adding missing blocks from ${latestDbBlock} to ${latestChainBlock.number}`)
+    try {
+      // await getMissingBlocks(latestDbBlock + 1, latestChainBlock.number)
+      await getMissingBlocks(903578, latestChainBlock.number)
+    } catch (e) {
+      console.log(e)
+    }
   }
-  return data.contractAddress.toLowerCase()
+  await getMissingBlocks(2108382, 2108389)
+  console.log('Getting ALl Balances')
+  await updateBalances()
+  console.log('Get all balance  succes')
 }
+
+main()
 
 module.exports = getMissingBlocks
