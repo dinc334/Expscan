@@ -1,49 +1,45 @@
-"use strict";
-
-module.exports = function(sequelize, DataTypes) {
-  var TxsTokens = sequelize.define('TxsTokens', {
+module.exports = function (sequelize, DataTypes) {
+  const TokensTxs = sequelize.define('TokensTxs', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
     blockHash: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     blockNumber: {
       type: DataTypes.INTEGER,
-      allowNull:  false
+      allowNull: false,
     },
     from: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     to: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     value: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     hash: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     timestamp: {
       type: DataTypes.BIGINT,
-      allowNull: false
+      allowNull: false,
     },
     token: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
-    // transactionIndex ?
-    // v ? r ? s ?
+      allowNull: false,
+    },
   }, {
-    tableName: 'txs-tokens', timestamps : false
-  });
+    tableName: 'tokensTxs', timestamps: false,
+  })
 
-  return TxsTokens;
-};
+  return TokensTxs
+}

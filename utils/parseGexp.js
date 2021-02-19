@@ -104,18 +104,16 @@ async function getMissingBlocks(fromBlock, toBlock) {
 }
 
 async function updateBalances() {
-  const pexAddr = '0x0cc6177ea69b0f1c2415043ac81ccd8f77d0c1a9'
-  const labAddr = '0xa887adb722cf15bc1efe3c6a5d879e0482e8d197'
   const addresses = await Addresses.findAll({ attributes: ['address'] })
-  for (const address of addresses) {
-    const balance_EXP = await web3.eth.getBalance(address.address)
-    const balance_PEX = await getTokenBalance(address.address, pex, pexAddr)
-    const balance_LAB = await getTokenBalance(address.address, tokenlab, labAddr)
-    await Addresses.update({ balance_EXP: formatDB(balance_EXP), balance_PEX, balance_LAB }, { where: { address: address.address } })
-  }
+  addresses.forEach(async (address) => {
+    const expBalance = await web3.eth.getBalance(address.address)
+    await Addresses.update({
+      balance_EXP: formatDB(expBalance),
+    }, { where: { address: address.address } })
+  })
   console.log('Finishing update balances, you can run ./sync.js')
 }
-
+updateBalances()
 // REFACTOR
 // Can i move this func to separete file?
 function getTokenBalance(address, tokenName, contractAddress) {
@@ -142,7 +140,7 @@ async function main() {
     console.log(`Start adding missing blocks from ${latestDbBlock} to ${latestChainBlock.number}`)
     try {
       // await getMissingBlocks(latestDbBlock + 1, latestChainBlock.number)
-      await getMissingBlocks(903578, latestChainBlock.number)
+      await getMissingBlocks(4000000, latestChainBlock.number)
     } catch (e) {
       console.log(e)
     }
@@ -153,6 +151,6 @@ async function main() {
   console.log('Get all balance  succes')
 }
 
-main()
+// main()
 
 module.exports = getMissingBlocks

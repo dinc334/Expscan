@@ -147,7 +147,7 @@ async function createTxsToken(transaction, timestamp, tokenName) {
   const labAddr = '0xa887adb722cf15bc1efe3c6a5d879e0482e8d197'
   const result = decoder.decodeData(transaction.input)
   const toAddress = (`0x${result.inputs[0]}`).toLowerCase()
-  if (result.name == 'transfer') {
+  if (result.name === 'transfer') {
     try {
       await TxsTokens.create({
         blockHash: transaction.blockHash,

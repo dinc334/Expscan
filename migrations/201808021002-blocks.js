@@ -54,7 +54,7 @@ module.exports = {
       type: Sequelize.STRING,
       allowNull: false,
     },
-    sha3Uncle: {
+    sha3Uncles: {
       type: Sequelize.STRING,
       allowNull: true,
     },

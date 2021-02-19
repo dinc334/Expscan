@@ -17,14 +17,15 @@ block content
                 span.text-secondary [#{tokenData.type}]
               td
           tbody
-            tr
-              td 
-                span PRICE:
-              td $#{tokenPrice.price_usd}
-            tr  
-              td
-                span MARKET CAP
-              td $#{formatNumber(tokenData.totalSupply*tokenPrice.price_usd)}
+            if tokenPrice
+              tr
+                td 
+                  span PRICE:
+                td $#{tokenPrice.price_usd}
+              tr  
+                td
+                  span MARKET CAP
+                td $#{formatNumber(tokenData.totalSupply*tokenPrice.price_usd)}
             tr
               td Total Supply:
               td #{formatNumber(tokenData.totalSupply)} #{tokenData.ticker}

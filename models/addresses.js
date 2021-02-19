@@ -14,14 +14,6 @@ module.exports = function (sequelize, DataTypes) {
       type: DataTypes.BIGINT,
       allowNull: true,
     },
-    balance_LAB: {
-      type: DataTypes.BIGINT,
-      allowNull: true,
-    },
-    balance_PEX: {
-      type: DataTypes.BIGINT,
-      allowNull: true,
-    },
     last_active: {
       type: DataTypes.BIGINT,
       allowNull: true,

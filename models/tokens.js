@@ -1,6 +1,4 @@
-"use strict";
-
-module.exports = function(sequelize, DataTypes) {
+module.exports = function (sequelize, DataTypes) {
   const Tokens = sequelize.define('Tokens', {
     id: {
       type: DataTypes.INTEGER,
@@ -9,27 +7,27 @@ module.exports = function(sequelize, DataTypes) {
     },
     ticker: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     website: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     holders: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     transfers: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     description: {
       type: DataTypes.TEXT,
-      allowNull: true
+      allowNull: true,
     },
     twitter: {
       type: DataTypes.STRING,
@@ -37,30 +35,30 @@ module.exports = function(sequelize, DataTypes) {
     },
     cmc: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     bitcointalk: {
       type: DataTypes.STRING,
-      allowNull: true
+      allowNull: true,
     },
     decimals: {
       type: DataTypes.INTEGER,
-      allowNull: false
+      allowNull: false,
     },
     totalSupply: {
       type: DataTypes.BIGINT,
-      allowNull: true
+      allowNull: true,
     },
     type: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     address: {
       type: DataTypes.STRING,
-      allowNull: true
-    }
+      allowNull: true,
+    },
   }, {
-    tableName: 'tokens', timestamps : false
-  });
-  return Tokens;
-};
+    tableName: 'tokens', timestamps: false,
+  })
+  return Tokens
+}

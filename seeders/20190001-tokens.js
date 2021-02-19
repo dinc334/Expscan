@@ -41,7 +41,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/egg/',
-    address: '0xd1365a5Af713cde10C6ac3fB9EDBB2bBbd4B2Ba2',
+    address: '0xd1365a5af713cde10c6ac3fb9edbb2bbbd4b2ba2',
     totalSupply: 1,
   }, {
     ticker: 'XEGG',
@@ -52,7 +52,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/xegg/',
-    address: '0x56C28AA1aE5Be73fdbd73634736AE9BD1C3b78Fb',
+    address: '0x56c28aa1ae5be73fdbd73634736ae9bd1c3b78fb',
     totalSupply: 2,
   }, {
     ticker: 'WEXP',
@@ -63,7 +63,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/wexp/',
-    address: '0x331631B4bb93b9B8962faE15860BD538a389395A',
+    address: '0x331631b4bb93b9b8962fae15860bd538a389395a',
     totalSupply: 3,
   }, {
     ticker: 'LOVE',
@@ -74,7 +74,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/love/',
-    address: '0x9D2761A714b5b2EfA325a8a3eee21BE32AACeB4A',
+    address: '0x9d2761a714b5b2efa325a8a3eee21be32aaceb4a',
     totalSupply: 4,
   }, {
     ticker: 'T64',
@@ -85,7 +85,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/t64/',
-    address: '0x72332c512bf2dA5A7Cd11752b380F7d8fcBba847',
+    address: '0x72332c512bf2da5a7cd11752b380f7d8fcbba847',
     totalSupply: 5,
   }, {
     ticker: 'ELABLP',
@@ -96,7 +96,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/explablp/',
-    address: '0x9f17C654Ca15d2bE76CfDF6cb806A4b8e4678EeD',
+    address: '0x9f17c654ca15d2be76cfdf6cb806a4b8e4678eed',
     totalSupply: 6,
   }, {
     ticker: 'ELOVELP',
@@ -107,7 +107,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/elovelp/',
-    address: '0xc150686B8b24f0e08f1d94773d0355427C25ef0e',
+    address: '0xc150686b8b24f0e08f1d94773d0355427c25ef0e',
     totalSupply: 7,
   }, {
     ticker: 'EEGGLP',
@@ -118,7 +118,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/eegglp/',
-    address: '0xd985c19c547386D99eCA85f86c0aFcf257CE6982',
+    address: '0xd985c19c547386d99eca85f86c0afcf257ce6982',
     totalSupply: 8,
   }, {
     ticker: 'ET64LP',
@@ -129,7 +129,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/expex/',
-    address: '0x505B2Fe24Aff173291fEAd573E90dFb21c754bFd',
+    address: '0x505b2fe24aff173291fead573e90dfb21c754bfd',
     totalSupply: 9,
   }, {
     ticker: 'EPEXLP',
@@ -140,7 +140,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/epexlp/',
-    address: '0x90390A27DBe65991cED136Ca6F95fd5953C5e1B8',
+    address: '0x90390a27dbe65991ced136ca6f95fd5953c5e1b8',
     totalSupply: 10,
   }, {
     ticker: 'PRM',
@@ -151,7 +151,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/promineros/',
-    address: '0x87Eb2fdF607B46F324984771FfDF2A0396139bDf',
+    address: '0x87eb2fdf607b46f324984771ffdf2a0396139bdf',
     totalSupply: 11,
   }]),
   down: (queryInterface, Sequelize) => queryInterface.bulkDelete('tokens', null, {}),

@@ -14,14 +14,6 @@ module.exports = {
       type: Sequelize.DOUBLE,
       allowNull: true,
     },
-    balance_LAB: {
-      type: Sequelize.DOUBLE,
-      allowNull: true,
-    },
-    balance_PEX: {
-      type: Sequelize.DOUBLE,
-      allowNull: true,
-    },
     last_active: {
       type: Sequelize.BIGINT,
       allowNull: true,

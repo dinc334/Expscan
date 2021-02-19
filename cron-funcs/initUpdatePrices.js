@@ -54,7 +54,7 @@ async function updateTokensCaps() {
         (token.price_usd * tokenSupply.totalSupply),
     }, { where: { ticker: token.ticker } })
   })
-  console.log('Update Tolen Caps')
+  console.log('Update Token Caps')
 }
 
 async function initPrice() {
@@ -66,6 +66,10 @@ async function initPrice() {
     price_btc: expData.priceBTC,
     volume: expData.volume,
     marketcap: expData.marketcap,
+  }, {
+    ticker: 'WEXP',
+    price_usd: expData.priceUSD,
+    price_btc: expData.priceBTC,
   }, {
     ticker: 'BTC',
     price_btc: 1,

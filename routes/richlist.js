@@ -12,11 +12,11 @@ router.get('/', async (req, res) => {
   if (page !== 1) id += (page * 100) - 100
 
   const count = await Addresses.count({
-    where: { balance_EXP: { [Op.ne]: null }, balance_EXP: { [Op.ne]: 0 } },
+    where: { [Op.and]: { balance_EXP: { [Op.ne]: null }, balance_EXP: { [Op.ne]: 0 } } },
   })
 
   const addresses = await Addresses.findAll({
-    where: { balance_EXP: { [Op.ne]: null }, balance_EXP: { [Op.ne]: 0 } },
+    where: { [Op.and]: { balance_EXP: { [Op.ne]: null }, balance_EXP: { [Op.ne]: 0 } } },
     order: [['balance_EXP', 'DESC']],
     offset: ((100 * page) - 100),
     limit: 100,
@@ -32,12 +32,14 @@ router.get('/', async (req, res) => {
   const { totalSupply } = await Tokens.findOne({
     where: { ticker: 'EXP' },
   })
+
   return res.render('richlist', {
-    page,
     count,
+    page,
     addresses,
-    exp: true,
     totalSupply,
+    tickerName: 'EXP',
+    balanceOf: 'balance_EXP',
     id,
   })
 })
