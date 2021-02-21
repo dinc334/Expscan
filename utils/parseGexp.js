@@ -113,7 +113,7 @@ async function updateBalances() {
   })
   console.log('Finishing update balances, you can run ./sync.js')
 }
-updateBalances()
+// updateBalances()
 // REFACTOR
 // Can i move this func to separete file?
 function getTokenBalance(address, tokenName, contractAddress) {
@@ -139,18 +139,16 @@ async function main() {
   if (latestChainBlock.number !== latestDbBlock) {
     console.log(`Start adding missing blocks from ${latestDbBlock} to ${latestChainBlock.number}`)
     try {
-      // await getMissingBlocks(latestDbBlock + 1, latestChainBlock.number)
-      await getMissingBlocks(4000000, latestChainBlock.number)
+      await getMissingBlocks(latestDbBlock + 1, latestChainBlock.number)
     } catch (e) {
       console.log(e)
     }
   }
-  await getMissingBlocks(2108382, 2108389)
   console.log('Getting ALl Balances')
   await updateBalances()
   console.log('Get all balance  succes')
 }
 
-// main()
+main()
 
 module.exports = getMissingBlocks

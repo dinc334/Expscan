@@ -153,6 +153,17 @@ module.exports = {
     cmc: 'https://coinmarketcap.com/currencies/promineros/',
     address: '0x87eb2fdf607b46f324984771ffdf2a0396139bdf',
     totalSupply: 11,
+  }, {
+    ticker: 'WAGMI',
+    name: 'Wagmi',
+    website: 'https://twitter.com/',
+    twitter: 'https://twitter.com/',
+    description: '',
+    decimals: 18,
+    type: 'ERC-20',
+    cmc: 'https://coinmarketcap.com/currencies/wagmi/',
+    address: '0x0D14F385647E66283E8E5D9c567296751Ac7ee7D',
+    totalSupply: 11,
   }]),
   down: (queryInterface, Sequelize) => queryInterface.bulkDelete('tokens', null, {}),
 }
