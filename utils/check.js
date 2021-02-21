@@ -1,9 +1,8 @@
-const pools = {
+const poolsAndContracts = {
   '0X342709DE12F503A689EFA9671532A72E19A9BBC7': 'Poloniex',
   '0XC9710872D3E65EDBF7F8776829DD7B21F2085E40': 'Bittrex',
   '0X6DBFE39370ADC9E0F284ED4FD8025342E99D21D6': 'Dwarfpool',
   '0X6E4A860420E024D2F269D45F85A24DC6F586376D': 'EBS',
-  '0XA887ADB722CF15BC1EFE3C6A5D879E0482E8D197': 'Tokenlab',
   '0X313C362544A92D182B3EF06C2AE786EE7692D10E': 'Cryptopia',
   '': 'expmine.pro',
   '0X00A86233F4D65F4018CA7F8626B96CE72AF05A7C': 'exp.2miners.com',
@@ -17,9 +16,6 @@ const pools = {
   '0X9C3EF85668F064ED75A707A9FEF00ED55BAB01F5': 'TokenlabICO',
   '0xa9ac4dc20cfc42e7c833d328971587e76b718135': 'BadGuy',
   '0XBB94F0CEB32257275B2A7A9C094C13E469B4563E': 'DevFund',
-}
-
-const contracts = {
   '0XA887ADB722CF15BC1EFE3C6A5D879E0482E8D197': 'Tokenlab',
   '0X0CC6177EA69B0F1C2415043AC81CCD8F77D0C1A9': 'Pex',
   '0XD1365A5AF713CDE10C6AC3FB9EDBB2BBBD4B2BA2': 'EGG',
@@ -33,26 +29,19 @@ const contracts = {
   '0X505B2FE24AFF173291FEAD573E90DFB21C754BFD': 'ET64LP',
   '0X90390A27DBE65991CED136CA6F95FD5953C5E1B8': 'EPEXLP',
   '0X87EB2FDF607B46F324984771FFDF2A0396139BDF': 'PRM',
+  '0X6680B66406DC1F1BCFFDBACA320F9D950E65DBA0': 'PEX LP Staking Pool',
 }
 
 const check = {
   checkAddress: function checkAddress(address, account) {
     const upper = address.toUpperCase()
-    if (Object.keys(pools).includes(upper)) {
-      return pools[upper]
+    if (Object.keys(poolsAndContracts).includes(upper)) {
+      return poolsAndContracts[upper]
     }
     if (account) {
       return address
     }
     return null
-  },
-
-  checkContractName: function checkContractName(address) {
-    const upper = address.toUpperCase()
-    if (Object.keys(contracts).includes(upper)) {
-      return contracts[upper]
-    }
-    return address
   },
 }
 

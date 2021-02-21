@@ -3,7 +3,6 @@ const Web3 = require('web3')
 const InputDataDecoder = require('ethereum-input-data-decoder')
 
 const web3 = new Web3()
-const contracts = require('../data/contracts.json')
 const ABI = require('../data/ABI.json')
 const getMissingBlocks = require('./parseGexp.js')
 
@@ -17,8 +16,6 @@ const { web3Http } = require('../config/config-server.json')
 web3.setProvider(new web3.providers.HttpProvider(web3Http))
 
 const decoder = new InputDataDecoder(ABI)
-const tokenlab = new web3.eth.Contract(ABI, contracts.tokenlab.address)
-const pex = new web3.eth.Contract(ABI, contracts.pex.address)
 
 // listenBlocks - get all latest blocks
 async function main() {
@@ -38,8 +35,7 @@ async function main() {
   }
 }
 
-main() // parse from 0 to latest 0 -> 100
-// listenBlocks() // parse from latest to all new 100 -> all new
+main() 
 
 async function listenBlocks() {
   const data = await web3.eth.getBlock('latest')
@@ -63,12 +59,11 @@ async function listenBlocks() {
         nonce: data.nonce,
       }, { returning: false })
     } catch (e) {
-      console.log('======= Create new Block issue (sync.js)===============')
       console.log(e)
     }
     if (data.transactions.length !== 0) {
       const txs = data.transactions
-      for (const tx of txs) {
+      txs.forEach(async (tx) => {
         const transaction = await web3.eth.getTransaction(tx)
         try {
           await Transactions.create({
@@ -86,19 +81,11 @@ async function listenBlocks() {
           }, { returning: false })
         } catch (e) {
           console.log(e)
-          console.log('Error here?')
         }
         // if this tx create new contract, them skip this loop iteration
         if (!transaction.to) continue
-        if (transaction.input != '0x') {
-          // lab transfer
-          if (transaction.to.toLowerCase() == contracts.tokenlab.address.toLowerCase()) {
-            await createTxsToken(transaction, data.timestamp, 'LAB')
-          }
-          // pex transfer
-          if (transaction.to.toLowerCase() == contracts.pex.address.toLowerCase()) {
-            await createTxsToken(transaction, data.timestamp, 'PEX')
-          }
+        if (transaction.input !== '0x') {
+          await createCustomTx(transaction, data.timestamp)
         }
         // update Addresses
         const existsTo = await Addresses.findOne({ where: { address: (transaction.to).toLowerCase() } })
@@ -112,8 +99,7 @@ async function listenBlocks() {
               last_active: data.timestamp,
             }, { returning: false })
           } catch (e) {
-            console.log('======== Create new tx issue (sync.js)=============')
-            console.error(e)
+            console.log(e)
           }
         } else {
           try {
@@ -135,7 +121,7 @@ async function listenBlocks() {
           }
         }
       }
-    }
+    )}
     console.log(` - New block was added ${data.number}`)
   }
   console.log('---------------Empty call------------')
@@ -143,8 +129,6 @@ async function listenBlocks() {
 }
 
 async function createTxsToken(transaction, timestamp, tokenName) {
-  const pexAddr = '0x0cc6177ea69b0f1c2415043ac81ccd8f77d0c1a9'
-  const labAddr = '0xa887adb722cf15bc1efe3c6a5d879e0482e8d197'
   const result = decoder.decodeData(transaction.input)
   const toAddress = (`0x${result.inputs[0]}`).toLowerCase()
   if (result.name === 'transfer') {
@@ -201,9 +185,7 @@ function getTokenBalance(address, tokenName, contractAddress) {
 
 async function saveContract(hash) {
   const data = await web3.eth.getTransactionReceipt(hash)
-  console.log(data)
   try {
-    // test variant
     await Contracts.create({
       hash,
       contractAddress: data.contractAddress.toLowerCase(),

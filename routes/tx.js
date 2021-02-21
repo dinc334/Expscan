@@ -21,9 +21,11 @@ router.get('/:tx', async (req, res) => {
     console.log('Error during getting tx details')
   }
   let tokenData
+
   if (txTokens) {
     tokenData = await Tokens.findOne({ where: { address: tx.to } })
   }
+
   if (!tx) {
     error = 'Sorry, We are unable to locate this transaction Hash.'
   }

@@ -34,8 +34,9 @@ block content
               tr
                 td To:
                 td Contract 
-                  a(href="/account/" + tx.to) #{tx.to} 
-                  | (#{tokenData.name})
+                  a(href="/account/" + tx.to) #{tx.to}
+                  if tokenData 
+                    | (#{tokenData})
               tr
                 td Token Transfered:
                 td 
@@ -45,9 +46,10 @@ block content
                   | To 
                   a(href = "/account/" + txTokens.to) #{(txTokens.to).substr(0,25)}... 
                   | for #{txTokens.value} 
-                  img(src='/img/tokens/' + tokenData.name.toLowerCase() +'.png' width='15px')
-                  span(style='margin-left: 5px')
-                    a(href ='/token/'+ tx.to) #{tokenData.ticker}
+                  if tokenData 
+                    img(src='/img/tokens/' + tokenData.name.toLowerCase() +'.png' width='15px')
+                    span(style='margin-left: 5px')
+                      a(href ='/token/'+ tx.to) #{tokenData.ticker}
             else
               tr
                 td To:

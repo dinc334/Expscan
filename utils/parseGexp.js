@@ -107,15 +107,16 @@ async function updateBalances() {
   const addresses = await Addresses.findAll({ attributes: ['address'] })
   addresses.forEach(async (address) => {
     const expBalance = await web3.eth.getBalance(address.address)
+    console.log(expBalance)
     await Addresses.update({
       balance_EXP: formatDB(expBalance),
     }, { where: { address: address.address } })
   })
   console.log('Finishing update balances, you can run ./sync.js')
 }
-// updateBalances()
-// REFACTOR
-// Can i move this func to separete file?
+updateBalances()
+
+// TO DO: move this func to separete file?
 function getTokenBalance(address, tokenName, contractAddress) {
   return new Promise(async (resolve, reject) => {
     await web3.eth.call({
@@ -149,6 +150,6 @@ async function main() {
   console.log('Get all balance  succes')
 }
 
-main()
+// main()
 
 module.exports = getMissingBlocks
