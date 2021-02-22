@@ -34,9 +34,9 @@ block content
               tr
                 td To:
                 td Contract 
-                  a(href="/account/" + tx.to) #{tx.to}
-                  if tokenData 
-                    | (#{tokenData})
+                  a(href="/account/" + tx.to) #{tx.to} 
+                  | (#{check.checkAddress(tx.to)}) 
+                
               tr
                 td Token Transfered:
                 td 
@@ -50,7 +50,28 @@ block content
                     img(src='/img/tokens/' + tokenData.name.toLowerCase() +'.png' width='15px')
                     span(style='margin-left: 5px')
                       a(href ='/token/'+ tx.to) #{tokenData.ticker}
-            else
+            if parsedTx 
+              tr 
+                td Transaction Actions:
+                td 
+                  i.fa.fa-caret-right(style='margin-right:5px')
+                  if parsedTx.method == 'withdraw'
+                    | Withdraw #{parsedTx.amountOut} 
+                    | from (#{check.checkAddress(tx.to)}) Pool
+
+                  if parsedTx.method == 'harvest'
+                    | Harvest some 
+                    img(src='/img/tokens/egg token.png' width='18px') 
+                    | EGG from (#{check.checkAddress(tx.to)})  Pool
+
+                  if parsedTx.method.substring(0, 4) == 'swap'
+                    | Swap #{parsedTx.amountIn}
+                    img(src='/img/tokens/' + parsedTx.swappedTokenName.toLowerCase() +'.png' width='18px')
+                    a(href="/token/" + parsedTx.tokenAddress) #{check.checkAddress(parsedTx.tokenAddress)} 
+                    | For #{parsedTx.amountOutMin} 
+                    a(href= "https://www.eggs.cool/ex/#/swap") On EggSwap 
+            
+            if !txTokens && !parsedTx
               tr
                 td To:
                 td

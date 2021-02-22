@@ -160,7 +160,7 @@ module.exports = {
     twitter: 'http://wagmi.io/',
     description: 'Wagmi is a token we use as a learning tool to teach each other how to defi on expanse',
     decimals: 18,
-    type: 'ERC-20',
+    type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/wagmi/',
     address: '0x0D14F385647E66283E8E5D9c567296751Ac7ee7D',
     totalSupply: 13,

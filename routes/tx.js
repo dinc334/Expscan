@@ -1,10 +1,64 @@
 const express = require('express')
 
 const router = express.Router()
+const { Op } = require('sequelize')
 
+// const Web3 = require('web3')
+// const CONFIG = require('../config/config-server.json')
+// const web3 = new Web3()
+// web3.setProvider(new web3.providers.HttpProvider(CONFIG.web3Http))
+
+const InputDataDecoder = require('ethereum-input-data-decoder')
 const {
   Tokens, Transactions, TokensTxs, Prices,
 } = require('../models')
+
+async function decodeTx(tx, txInput, contractAddress) {
+  const existingToken = await Tokens.findOne({ where: { [Op.and]: { address: contractAddress, type: 'ERC-644' } } })
+  let decodedData = {}
+  if (!existingToken) {
+    // not erc20 or erc644
+    const notErcABIs = {
+      // might be labLP, eggLP, wagmiLP, prmLP address, etc.
+      '0x6680b66406dc1f1bcffdbaca320f9d950e65dba0': 'sushiLPABI',
+      '0xfaf3ddcb8d17db02e08e45f02afb8d427669d592': 'expRouterABI',
+    }
+
+    const contractABI = require(`../data/${notErcABIs[contractAddress.toLowerCase()]}.json`)
+    if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }
+    const decoder = new InputDataDecoder(contractABI)
+    const decodedObj = decoder.decodeData(txInput)
+
+    // TO DO: move to switch after all method added
+    if (decodedObj.method === 'swapExactTokensForEXP') {
+      const tokenAddress = `0x${decodedObj.inputs[2][0]}`
+      const swappedTokenInfo = await Tokens.findOne({ where: { address: tokenAddress } })
+      decodedData = {
+        method: decodedObj.method,
+        amountIn: decodedObj.inputs[0].toString() / (10 ** 18),
+        amountOutMin: `${decodedObj.inputs[1].toString() / (10 ** 18)} EXP`,
+        tokenAddress: tokenAddress.toUpperCase(),
+        swappedTokenName: swappedTokenInfo.name,
+      }
+    }
+
+    if (decodedObj.method === 'deposit') {
+      decodedData = {
+        method: 'harvest',
+        amount: decodedObj.inputs[0].toString(),
+        amount1: decodedObj.inputs[1].toString(),
+      }
+    }
+    if (decodedObj.method === 'withdraw') {
+      decodedData = {
+        method: decodedObj.method,
+        amountOut: decodedObj.inputs[1].toString() / (10 ** 18),
+      }
+    }
+  }
+
+  return decodedData
+}
 
 router.get('/:tx', async (req, res) => {
   const txHash = req.params.tx
@@ -12,9 +66,20 @@ router.get('/:tx', async (req, res) => {
   let price = 0
   let tx
   let txTokens
+  let parsedTx
+  try {
+    tx = await Transactions.findOne({ where: { hash: txHash } })
+  } catch (e) {
+    console.log('Cannot get this tx')
+    console.log(e)
+  }
+
+  if (tx.data !== '0x') {
+    parsedTx = await decodeTx(txHash, tx.data, tx.to)
+  }
+
   try {
     price = await Prices.findOne({ where: { ticker: 'EXP' } })
-    tx = await Transactions.findOne({ where: { hash: txHash } })
     txTokens = await TokensTxs.findOne({ where: { hash: txHash } })
   } catch (e) {
     console.log(e)
@@ -34,81 +99,17 @@ router.get('/:tx', async (req, res) => {
     price,
     txTokens: txTokens || null,
     tokenData: tokenData || null,
+    parsedTx,
   })
 })
 
+// TO DO: add later with web3 websockets
 router.get('/pending', (req, res, next) => {
   const config = req.app.get('config')
   const web3 = new Web3()
   web3.setProvider(config.provider)
 
-  async.waterfall([
-    function (callback) {
-      web3.parity.pendingTransactions((err, result) => {
-        callback(err, result)
-      })
-    },
-  ], (err, txs) => {
-    if (err) {
-      return next(err)
-    }
-
-    res.render('tx_pending', { txs })
-  })
-})
-
-router.get('/submit', (req, res, next) => {
-  res.render('tx_submit', { })
-})
-
-router.post('/submit', (req, res, next) => {
-  if (!req.body.txHex) {
-    return res.render('tx_submit', { message: 'No transaction data specified' })
-  }
-
-  const config = req.app.get('config')
-  const web3 = new Web3()
-  web3.setProvider(config.provider)
-
-  async.waterfall([
-    function (callback) {
-      web3.eth.sendRawTransaction(req.body.txHex, (err, result) => {
-        callback(err, result)
-      })
-    },
-  ], (err, hash) => {
-    if (err) {
-      res.render('tx_submit', { message: `Error submitting transaction: ${err}` })
-    } else {
-      res.render('tx_submit', { message: `Transaction submitted. Hash: ${hash}` })
-    }
-  })
-})
-
-router.get('/raw/:tx', (req, res, next) => {
-  const config = req.app.get('config')
-  const web3 = new Web3()
-  web3.setProvider(config.provider)
-
-  async.waterfall([
-    function (callback) {
-      web3.eth.getTransaction(req.params.tx, (err, result) => {
-        callback(err, result)
-      })
-    }, function (result, callback) {
-      web3.trace.replayTransaction(result.hash, ['trace', 'stateDiff', 'vmTrace'], (err, traces) => {
-        callback(err, result, traces)
-      })
-    },
-  ], (err, tx, traces) => {
-    if (err) {
-      return next(err)
-    }
-
-    tx.traces = traces
-
-    res.render('tx_raw', { tx })
-  })
+  res.render('tx_pending', { txs: [] })
 })
 
 module.exports = router

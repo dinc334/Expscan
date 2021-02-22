@@ -98,6 +98,10 @@ async function initPrice() {
     ticker: 'PRM',
     price_usd: 0.0033,
     price_btc: btcPrice / 0.0033,
+  }, {
+    ticker: 'WAGMI',
+    price_usd: 0.013,
+    price_btc: btcPrice / 0.013,
   }]
   try {
     await Prices.bulkCreate(allData)
