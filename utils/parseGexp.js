@@ -14,9 +14,6 @@ web3.setProvider(new web3.providers.HttpProvider(CONFIG.web3Http))
 
 const ABI = require('../data/ABI644.json')
 
-const tokenlab = new web3.eth.Contract(ABI, '0xa887adb722cf15bc1efe3c6a5d879e0482e8d197')
-const pex = new web3.eth.Contract(ABI, '0x0cc6177ea69b0f1c2415043ac81ccd8f77d0c1a9')
-
 async function saveContract(hash) {
   const data = await web3.eth.getTransactionReceipt(hash)
   console.log(data)
@@ -114,7 +111,7 @@ async function updateBalances() {
   })
   console.log('Finishing update balances, you can run ./sync.js')
 }
-updateBalances()
+// updateBalances()
 
 // TO DO: move this func to separete file?
 function getTokenBalance(address, tokenName, contractAddress) {
@@ -150,6 +147,6 @@ async function main() {
   console.log('Get all balance  succes')
 }
 
-// main()
+main()
 
 module.exports = getMissingBlocks

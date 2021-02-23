@@ -20,6 +20,8 @@ body {
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 }
 
+
+
 a {
   color: #3399ff;
 }
@@ -315,7 +317,7 @@ h3.titles{
 }
 
 /*Styles for block page*/
-.overview{
+.overview {
   margin-left: 5px;
   display: inline;
   background: #ff7732;
@@ -323,19 +325,19 @@ h3.titles{
   font-size: 15px;
   padding: 5px 15px;
 }
-.block-heading h4{
+.block-heading h4 {
   border: 1px solid #ffb28b;
   margin: 0;
   padding: 10px;
   min-height: 45px;
   background: #ffaa7f;
 }
-.block-heading p{
+.block-heading p {
   font-weight: 400;
   margin-top: 5px;
   font-size: 13px;
 }
-.block-info{
+.block-info {
   padding:15px;
   background: white;
   font-size: 14px;
@@ -345,14 +347,16 @@ h3.titles{
   box-shadow: 0 1px 1px rgba(0,0,0,.05);
 }
 
-.block-info table td{
+.block-info table td {
   border: none !important;
 }
 .block-info tr:hover{
   background-color: #F0F0F0;
 }
 
-
+.block-info span.decodedNames {
+  color: #77838f;
+}
 
 .heightBLock > *{
   display: inline-block;
@@ -585,7 +589,7 @@ ul.availabelBalane {
 .text-secondary {
   font-size: 11px;
   font-weight: 400;
-  color: #4a4f55;
+  color: #77838f;
 }
 
 .tokenCard table tr td:first-child{
