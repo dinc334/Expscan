@@ -15,6 +15,7 @@ const {
 
 async function decodeTx(tx, txInput, contractAddress) {
   const existingToken = await Tokens.findOne({ where: { [Op.and]: { address: contractAddress, type: 'ERC-644' } } })
+
   let decodedData = {}
   if (!existingToken) {
     // not erc20 or erc644
@@ -47,7 +48,6 @@ async function decodeTx(tx, txInput, contractAddress) {
     }
 
     if (decodedObj.method === 'swapExactTokensForTokens') {
-      // 1000 EGG =>  19.1 LVE (uniswap)
       const tokenIn = `0x${decodedObj.inputs[2][0]}`
       const tokenPath = `0x${decodedObj.inputs[2][2]}`
       decodedData = {
@@ -89,10 +89,18 @@ async function decodeTx(tx, txInput, contractAddress) {
     if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }
     const decoder = new InputDataDecoder(contractABI)
     const decodedObj = decoder.decodeData(txInput)
+
     if (decodedObj.method === 'approve') {
       decodedData = {
         method: decodedObj.method,
         addressDestination: `0x${decodedObj.inputs[0]}`,
+      }
+    }
+    if (decodedObj.method === 'transfer') {
+      decodedData = {
+        method: decodedObj.method,
+        addressDestination: `0x${decodedObj.inputs[0]}`,
+        value: decodedObj.inputs[1].toString() / 10 ** 18,
       }
     }
   }
@@ -105,14 +113,15 @@ router.get('/:tx', async (req, res) => {
   let error
   let price = 0
   let tx
-  let txTokens
   let parsedTx
   try {
-    tx = await Transactions.findOne({ where: { hash: txHash } })
+    tx = await Transactions.findOne({ where: { hash: txHash.toLowerCase() } })
   } catch (e) {
     console.log('Cannot get this tx')
     console.log(e)
   }
+
+  if (!tx) return
 
   if (tx.data !== '0x') {
     parsedTx = await decodeTx(txHash, tx.data, tx.to)
@@ -120,16 +129,11 @@ router.get('/:tx', async (req, res) => {
 
   try {
     price = await Prices.findOne({ where: { ticker: 'EXP' } })
-    txTokens = await TokensTxs.findOne({ where: { hash: txHash } })
   } catch (e) {
     console.log(e)
     console.log('Error during getting tx details')
   }
   let tokenData
-
-  if (txTokens) {
-    tokenData = await Tokens.findOne({ where: { address: tx.to } })
-  }
 
   if (!tx) {
     error = 'Sorry, We are unable to locate this transaction Hash.'
@@ -137,7 +141,6 @@ router.get('/:tx', async (req, res) => {
   return res.render('tx', {
     tx: tx || error,
     price,
-    txTokens: txTokens || null,
     tokenData: tokenData || null,
     parsedTx,
   })

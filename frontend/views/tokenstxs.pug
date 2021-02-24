@@ -9,7 +9,7 @@ block content
         .container
           .pagn
             span.hidden-xs
-              | A total of #{allTxs} txs found
+              | A total of #{numberOfTxs} txs found
               br
               | Displaying the last 1000 records only
             ul.pagination
@@ -26,19 +26,19 @@ block content
                   a.page-link(href="/tokenstxs?p=" + (page - 1)) 
                     img(src='/img/chevron-left.png' width='10px')
               li.page-item.disabled
-                a.page-link #{page} of #{Math.round(allTxs/1000)*10} 
-              if page == (Math.round(allTxs/1000)*10)
+                a.page-link #{page} of #{Math.round(numberOfTxs/1000)*10} 
+              if page == (Math.round(numberOfTxs/1000)*10)
                 li.page-item.disabled(title='Go to Next')
                   a.page-link(href="/tokenstxs?p=" + (page + 1))
                     img(src='/img/chevron-right.png' width='10px')
                 li.page-item.disabled
-                  a.page-link(href="/tokenstxs?p="+ Math.round(allTxs/1000)*10) Last
+                  a.page-link(href="/tokenstxs?p="+ Math.round(numberOfTxs/1000)*10) Last
               else 
                 li.page-item(title='Go to Next')
                   a.page-link(href="/tokenstxs?p=" + (page + 1))
                     img(src='/img/chevron-right.png' width='10px')
                 li.page-item
-                  a.page-link(href="/tokenstxs?p="+ Math.round(allTxs/1000)*10) Last
+                  a.page-link(href="/tokenstxs?p="+ Math.round(numberOfTxs/1000)*10) Last
       .table-responsive
         .tokentxs
           table.table.block-info
@@ -55,8 +55,7 @@ block content
               for tokenTx in tokensTxs
                 tr 
                   td
-                    a(href='/tx/'+tokenTx.hash) #{tokenTx.hash.substr(0,10)}
-                    |...
+                    | #{tokenTx.hash.substr(0,10)}...
                   td #{calcFunc.calcDate(tokenTx.timestamp)}
                   td 
                     a(href='/account/'+ tokenTx.from) #{check.checkAddress(tokenTx.from,true)}
@@ -66,11 +65,8 @@ block content
                     a(href='/account/'+ tokenTx.to) #{check.checkAddress(tokenTx.to,true)}
                   td #{formatNumber(tokenTx.value)}
                   td(style='display: flex; align-items: center; ') 
-                    if tokenTx.token == "LAB" 
-                      img(style='margin-right:4px' src='/img/tokens/tokenlab.png' width='14px')
-                      a(href='/token/'+ labAddr ) #{tokenTx.token}
-                    else
-                      img(style='margin-right:4px' src='/img/tokens/expex.png' width='14px')
-                      a(href='/token/'+ pexAddr) #{tokenTx.token}
+                    img(style='margin-right:4px' src='/img/tokens/' + tokenTx.token + '.png' width='14px')
+                    a(href='/token/'+ labAddr ) #{tokenTx.token}
+                    
               
 

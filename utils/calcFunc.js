@@ -10,7 +10,7 @@ const calcFunc = {
     return data.fromNow()
   },
   calcPercent: function calcPercent(amount, totalSupply) {
-    const percent = amount / (totalSupply * 100)
+    const percent = (Number(amount) / (Number(totalSupply))) * 100
     return Number(percent).toFixed(5)
   },
 }

@@ -32,7 +32,7 @@ async function getIcoTransfers() {
         to: tx.returnValues.Account.toLowerCase(),
         value,
         hash: tx.transactionHash,
-        token: 'LAB',
+        token: 'tokenlab',
         timestamp: txTime.timestamp,
       })
     } else if (tx.returnValues.Polarity == '-' && value > 1) {
@@ -60,7 +60,7 @@ async function getAllTransfers(abi, token) {
       value: Number(tx.returnValues._value) / Math.pow(10, 18),
       hash: tx.transactionHash,
       timestamp: txTime.timestamp,
-      token: token.name,
+      token: token.name.toLowerCase(),
     }
     allTxs.push(transfer)
   }

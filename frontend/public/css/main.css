@@ -358,6 +358,12 @@ h3.titles{
   color: #77838f;
 }
 
+.block-info span.decodedTransfer {
+  line-height: 1.5;
+  color: #1e2022;
+  font-weight: bold;
+}
+
 .heightBLock > *{
   display: inline-block;
   margin: 0 5px 0 5px;

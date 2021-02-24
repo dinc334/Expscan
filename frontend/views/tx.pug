@@ -56,6 +56,21 @@ block content
                 td Transaction Actions:
                 td 
                   i.fa.fa-caret-right(style='margin-right:5px')
+                    //- method: 'transfer',
+                    //- addressDestination: '0x5cb0f8be53b1201d91185193956eaf7f996e3959',
+                    //- value: 1000
+                  if parsedTx.method == 'transfer'
+                    span.decodedTransfer From  
+                    a(href='/account/' + tx.from) #{tx.from.substr(0, 14)}... 
+                    span.decodedTransfer To 
+                    a(href='/account/' + parsedTx.addressDestination) #{parsedTx.addressDestination.substr(0, 14)}...  
+                    span.decodedTransfer For 
+                    | #{parsedTx.value} 
+                    if parsedTx.tokenPrice 
+                      | ($#{parsedTx.value * parsedTx.tokenPrice})
+                    img(src='/img/tokens/' + check.checkAddress(tx.to).toLowerCase() + '.png' width='18px') 
+                    | #{check.checkAddress(tx.to)}
+
                   if parsedTx.method == 'approve'
                     span.decodedNames Approve To Add   
                     if check.checkAddress(tx.to)
@@ -124,7 +139,8 @@ block content
                 td To:
                 td
                   a(href = '/account/' + tx.to) #{tx.to} 
-                  | (#{check.checkAddress(tx.to)})
+                  if check.checkAddress(tx.to)
+                    | (#{check.checkAddress(tx.to)})
             tr
               td Value:
               td #{ethformatter(tx.value)}

@@ -211,7 +211,6 @@ block content
                     tr
                       th TxHash
                       th Age
-                      th Block
                       th From
                       th
                       th To
@@ -221,28 +220,37 @@ block content
                     for tx in txsTokens  
                       tr
                         td
-                          a(href ='/block/' + tx.blockNumber) #{tx.blockHash.substr(0,20)}...
+                          a(href ='/block/' + tx.blockNumber) #{tx.blockHash.substr(0,13)}...
                         td
                           | #{calcFunc.calcDate(tx.timestamp)}
                         td
-                          a(href = '/block/' + tx.blockNumber) #{tx.blockNumber}
-                        td
-                          a(href="/account/" + tx.from) #{check.checkAddress(tx.from,true)}
+                          if check.checkAddress(tx.from, true).length == 42
+                            if tx.from !== account.address
+                              a(href="/account/" + tx.from) #{check.checkAddress(tx.from, true).substr(0, 15)}...
+                            else 
+                              | #{check.checkAddress(tx.from, true).substr(0, 15)}...
+                          else 
+                            a(href="/account/" + tx.from) #{check.checkAddress(tx.from, true)}
+
                         td
                           if tx.from === account.address
                             span.label.label-orange.rounded OUT
                           else
                             span.label.label-green.rounded IN
                         td    
-                          a(href="/account/" + tx.to) #{check.checkAddress(tx.to,true)}
+                          if check.checkAddress(tx.to, true).length == 42
+                            if tx.to !== account.address
+                              a(href="/account/" + tx.to) #{check.checkAddress(tx.to,true).substr(0, 15)}...
+                            else 
+                              | #{check.checkAddress(tx.to,true).substr(0, 15)}...
+                          else 
+                            a(href="/account/" + tx.to) #{check.checkAddress(tx.to,true)}
                         td #{tx.value} 
                         td(style='display: flex; align-items: center;') 
-                          if tx.token == "LAB" 
-                            img(style='margin-right:4px' src='/img/tokens/tokenlab.png' width='14px')
+                          if tx.token
+                            img(style='margin-right:4px' src='/img/tokens/'+ tx.token.toLowerCase() + '.png' width='14px')
                             a(href='/token/0xa887adb722cf15bc1efe3c6a5d879e0482e8d197' ) #{tx.token}
-                          else
-                            img(style='margin-right:4px' src='/img/tokens/expex.png' width='14px')
-                            a(href='/token/0x0cc6177ea69b0f1c2415043ac81ccd8f77d0c1a9') #{tx.token}
+                          
       
   script(src='/js/qrcode.js')
   script.

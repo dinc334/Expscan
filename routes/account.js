@@ -12,8 +12,7 @@ router.get('/:address', async (req, res) => {
   page = Number(page)
   const address = req.params.address.toLowerCase()
 
-  let priceEXP; let priceLAB; let transactions; let minedBlocks; let txsTokens; let
-    balances
+  let priceEXP; let transactions; let minedBlocks; let txsTokens; let balances
   try {
     balances = await Addresses.findOne({
       attributes: { exclude: ['id', 'last_active'] },
@@ -22,7 +21,8 @@ router.get('/:address', async (req, res) => {
   } catch (e) {
     console.log('Internal DB error (Addresses)')
   }
-  const { count } = balances
+  let count
+  if (balances) count = balances.count
   let limit
 
   if (count > 1000) {
@@ -71,9 +71,17 @@ router.get('/:address', async (req, res) => {
       where: { [Op.or]: [{ from: address }, { to: address }] },
       order: [['blockNumber', 'DESC']],
       attributes: { exclude: ['id', 'hash'] },
+      limit: 100,
     })
   } catch (e) {
     return res.render('account', { error: true, reason: 'Internal TokensTxs db issue' })
+  }
+
+  if (!balances && txsTokens) {
+    balances = {
+      balance_EXP: 0,
+    }
+    count = txsTokens.length
   }
 
   return res.render('account', {
@@ -83,7 +91,8 @@ router.get('/:address', async (req, res) => {
     address,
     priceEXP,
     transactions,
-    txsTokens: [],
+    // TO DO: fix txsTokens
+    txsTokens,
     count,
   })
 })

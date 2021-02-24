@@ -36,7 +36,7 @@ block content
                   td #{Number(address[balanceOf].toFixed(0)).toLocaleString()}.
                     font(color='#ACB3B3') #{(Number(address[balanceOf] % 1)*1000).toFixed(0)} 
                     | #{tickerName}
-                  td #{calcFunc.calcPercent(address[balanceOf].totalSupply)}%
+                  td #{calcFunc.calcPercent(address[balanceOf], totalSupply)}%
                   td #{calcFunc.calcDate(address.last_active)} 
 
       .pagn.pagn-right

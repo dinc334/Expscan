@@ -14,7 +14,7 @@ router.get('/:address', async (req, res) => {
 
   const address = req.params.address.toLowerCase()
   const tokenData = await Tokens.findOne({ where: { address } })
-  // return
+
   let tokenPrice = {}
 
   if (tokenData) {
@@ -24,15 +24,17 @@ router.get('/:address', async (req, res) => {
       console.error(e)
     }
   }
+
   const txsTokens = await TokensTxs.findAll({
-    where: { token: tokenData.ticker },
+    where: { token: tokenData.name.toLowerCase() },
     order: [['timestamp', 'DESC']],
     offset: ((100 * page) - 100),
     limit: 100,
   })
+
   // DO TO: here will be new table TokenBalances
   const addresses = []
-  const countTxs = await TokensTxs.count({ where: { token: tokenData.ticker } })
+  const countTxs = await TokensTxs.count({ where: { token: tokenData.name.toLowerCase() } })
 
   const countHolders = 100
 

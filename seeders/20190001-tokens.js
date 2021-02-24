@@ -184,7 +184,7 @@ module.exports = {
     decimals: 18,
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/wagmi/',
-    address: '0x0D14F385647E66283E8E5D9c567296751Ac7ee7D',
+    address: '0x0d14f385647e66283e8e5d9c567296751ac7ee7d',
     totalSupply: 13,
   }, {
     ticker: 'SVIT',
@@ -197,12 +197,6 @@ module.exports = {
     address: '0x54451dbe4b925aa5e312e232c6cba2eaa0d98169',
     type: 'ERC-644',
     cmc: 'https://coinmarketcap.com/currencies/svit/',
-  }, {
-    ticker: 'PexPool',
-    name: 'PEX LP Staking Pool',
-    address: '0x6680b66406dc1f1bcffdbaca320f9d950e65dba0',
-    decimals: 18,
-    type: 'LP',
   }]),
   down: (queryInterface, Sequelize) => queryInterface.bulkDelete('tokens', null, {}),
 }
