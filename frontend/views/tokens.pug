@@ -27,6 +27,7 @@ block content
 						th MarketCap
 						th Holders
 						th Transfers
+						th TotalSupply
 						th Rich List
 				tbody
 					for token in tokens
@@ -45,5 +46,6 @@ block content
 							td $#{formatNumber(token.price_usd*token.totalSupply)}
 							td #{token.holders}
 							td #{token.transfers}
+							td #{token.totalSupply}
 							td 
 								a(href='/richlist/'+token.name.toLowerCase()) Link

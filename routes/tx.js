@@ -3,14 +3,9 @@ const express = require('express')
 const router = express.Router()
 const { Op } = require('sequelize')
 
-// const Web3 = require('web3')
-// const CONFIG = require('../config/config-server.json')
-// const web3 = new Web3()
-// web3.setProvider(new web3.providers.HttpProvider(CONFIG.web3Http))
-
 const InputDataDecoder = require('ethereum-input-data-decoder')
 const {
-  Tokens, Transactions, TokensTxs, Prices,
+  Tokens, Transactions, Prices,
 } = require('../models')
 
 async function decodeTx(tx, txInput, contractAddress) {
@@ -138,11 +133,18 @@ router.get('/:tx', async (req, res) => {
   if (!tx) {
     error = 'Sorry, We are unable to locate this transaction Hash.'
   }
+  let tokenPrice
+  const isContractRecive = await Tokens.findOne({ where: { address: tx.to.toLowerCase() } })
+  if (isContractRecive) {
+    const tokenInfo = await Prices.findOne({ where: { ticker: isContractRecive.ticker } })
+    if (tokenInfo) tokenPrice = tokenInfo.price_usd
+  }
   return res.render('tx', {
     tx: tx || error,
     price,
     tokenData: tokenData || null,
     parsedTx,
+    tokenPrice: tokenPrice || null,
   })
 })
 

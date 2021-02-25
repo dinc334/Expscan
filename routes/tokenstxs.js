@@ -2,7 +2,7 @@ const express = require('express')
 
 const router = express.Router()
 
-const { Tokens, TokensTxs } = require('../models')
+const { TokensTxs } = require('../models')
 
 router.get('/', async (req, res) => {
   let page = req.query.p || 1

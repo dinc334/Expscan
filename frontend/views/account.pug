@@ -23,17 +23,17 @@ block content
             tbody
               tr
                 td EXP Balance:
-                td #{formatNumber(account.balance_EXP)} Exp
+                td #{formatNumber(expBalance)} Exp
               tr
                 td EXP USD Value:
-                //- balance * current price
-                td(style="line-height:1.42") $#{formatNumber((account.balance_EXP)*priceEXP.price_usd)} 
+                td(style="line-height:1.42") $#{formatNumber((expBalance)*priceEXP.price_usd)} 
                   font(style="position:relative; top:-1px") (@ $#{Number(priceEXP.price_usd).toFixed(2)}/EXP)
               tr 
                 td Transactions:
                 td
                   span #{count} txns
-              if account.balance_PEX || account.balance_LAB
+              //- update this to latest version
+              if account.balance_PEX || account.balance_LAB 
                 tr
                   td Token:
                   td.tokenBalances

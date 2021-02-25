@@ -58,11 +58,17 @@ block content
                     | #{tokenTx.hash.substr(0,10)}...
                   td #{calcFunc.calcDate(tokenTx.timestamp)}
                   td 
-                    a(href='/account/'+ tokenTx.from) #{check.checkAddress(tokenTx.from,true)}
+                    if check.checkAddress(tokenTx.from, true).length == 42
+                      a(href='/account/'+ tokenTx.from) #{tokenTx.from.substr(0, 20)}...
+                    else   
+                      a(href='/account/'+ tokenTx.from) #{check.checkAddress(tokenTx.from,true)}
                   td
                     img(src='/img/arrow.png' width="25px" height="20px") 
                   td 
-                    a(href='/account/'+ tokenTx.to) #{check.checkAddress(tokenTx.to,true)}
+                    if check.checkAddress(tokenTx.to, true).length == 42
+                      a(href='/account/'+ tokenTx.to) #{tokenTx.to.substr(0, 20)}...
+                    else   
+                      a(href='/account/'+ tokenTx.to) #{check.checkAddress(tokenTx.to,true)}
                   td #{formatNumber(tokenTx.value)}
                   td(style='display: flex; align-items: center; ') 
                     img(style='margin-right:4px' src='/img/tokens/' + tokenTx.token + '.png' width='14px')

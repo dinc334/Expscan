@@ -66,8 +66,9 @@ block content
                     a(href='/account/' + parsedTx.addressDestination) #{parsedTx.addressDestination.substr(0, 14)}...  
                     span.decodedTransfer For 
                     | #{parsedTx.value} 
-                    if parsedTx.tokenPrice 
-                      | ($#{parsedTx.value * parsedTx.tokenPrice})
+                    if tokenPrice 
+                      span.decodedTransfer ($#{(tokenPrice * parsedTx.value).toFixed(5)})
+                    
                     img(src='/img/tokens/' + check.checkAddress(tx.to).toLowerCase() + '.png' width='18px') 
                     | #{check.checkAddress(tx.to)}
 

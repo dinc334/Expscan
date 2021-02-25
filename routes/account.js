@@ -3,6 +3,12 @@ const { Op } = require('sequelize')
 
 const router = express.Router()
 
+const Web3 = require('web3')
+const CONFIG = require('../config/config-server.json')
+
+const web3 = new Web3()
+web3.setProvider(new web3.providers.HttpProvider(CONFIG.web3Http))
+
 const {
   Addresses, Transactions, TokensTxs, Prices, Blocks,
 } = require('../models')
@@ -21,6 +27,10 @@ router.get('/:address', async (req, res) => {
   } catch (e) {
     console.log('Internal DB error (Addresses)')
   }
+
+  let expBalance = await web3.eth.getBalance(address)
+  if (expBalance) expBalance /= (10 ** 18)
+
   let count
   if (balances) count = balances.count
   let limit
@@ -85,6 +95,7 @@ router.get('/:address', async (req, res) => {
   }
 
   return res.render('account', {
+    expBalance,
     minedBlocks,
     page,
     account: balances,
