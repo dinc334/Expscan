@@ -4,13 +4,17 @@ block content
   .container
     .accountAddress
       .h3Border
-        h3 Address: 
-          if account
-            span #{account.address}
-          else
-            span #{address}
-        //- if account.isContract
-        //-   h3 Contract #{account.address}
+        if contractInfo 
+          h3 Contract: 
+            span #{account.address} 
+            if check.checkAddress(account.address.toLowerCase())
+              | (#{check.checkAddress(account.address.toLowerCase())})
+        else 
+          h3 Address: 
+            if account
+              span #{account.address}
+            else
+              span #{address}
   .container
     if account
       .col-md-6
@@ -32,6 +36,14 @@ block content
                 td Transactions:
                 td
                   span #{count} txns
+              if contractInfo 
+                tr 
+                  td Creator 
+                  td 
+                    a(href='/account/' + contractInfo.creator) #{contractInfo.creator.substr(0, 20)}... 
+                    | at tx  
+                    a(href='/tx/' + contractInfo.hash) #{contractInfo.hash.substr(0, 20)}...
+
               //- update this to latest version
               if account.balance_PEX || account.balance_LAB 
                 tr

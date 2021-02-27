@@ -1,0 +1,76 @@
+extends main
+
+block content
+  .container
+    .h3Border
+      h3 Expanse Gas Tracker
+    .gasMainRow
+      .card-body
+        span.text-secondary-gas.gasTrackerTime #{moment(Date.now()).format('YYYY-MM-DD hh:mm:ss')}
+        .regularTransfer
+          .card-body
+            p.boldh6 Low
+            p.gwei.gwei-low #{avgValues[0].toFixed(2)-1} gwei
+            p.text-secondary-gas $#{(calcFunc.caclGas(avgValues[0]-1, glExpTransfer) * usdPrice).toFixed(7)}  | ~ 30 secs
+          .card-body
+            p.boldh6 Average 
+            p.gwei.gwei-average #{avgValues[0].toFixed(2)} gwei
+            p.text-secondary-gas $#{(calcFunc.caclGas(avgValues[0], glExpTransfer) * usdPrice).toFixed(7)}  | ~ 27 secs
+          .card-body
+            p.boldh6 High
+            p.gwei.gwei-high #{(Number(avgValues[0])+1).toFixed(2)} gwei
+            p.text-secondary-gas $#{(calcFunc.caclGas(avgValues[0]+1, glExpTransfer) * usdPrice).toFixed(7)}  | ~ 20 secs
+        p.h4 Estimated Cost of Transfers & Interactions:
+        .table-responsive
+          table.table.block-info
+            tr
+              td 
+              td Low
+              td Averate
+              td High
+            tr 
+              td.text-secondary-gas
+                i.fa.fa-question-circle.text-secondary-gas
+                |  ERC644 Transfer 
+              td $#{(calcFunc.caclGas(avgValues[1]-1, glErc20Transfer) * usdPrice).toFixed(6)}
+              td $#{(calcFunc.caclGas(avgValues[1], glErc20Transfer) * usdPrice).toFixed(6)}
+              td $#{(calcFunc.caclGas(avgValues[1]+1, glErc20Transfer) * usdPrice).toFixed(6)}
+            tr 
+              td.text-secondary-gas 
+                i.fa.fa-question-circle.text-secondary-gas
+                |  EggSwap Swap
+              td $#{(calcFunc.caclGas(avgValues[2]-1, glDexSwap) * usdPrice).toFixed(6)}
+              td $#{(calcFunc.caclGas(avgValues[2], glDexSwap) * usdPrice).toFixed(6)}
+              td $#{(calcFunc.caclGas(avgValues[2]+1, glDexSwap) * usdPrice).toFixed(6)}
+            tr 
+              td.text-secondary-gas 
+                i.fa.fa-question-circle.text-secondary-gas
+                |  EggSwap Add/Remove LP 
+              td $#{(calcFunc.caclGas(avgValues[3]-1, glRemoveOrAppLp) * usdPrice).toFixed(6)}
+              td $#{(calcFunc.caclGas(avgValues[3], glRemoveOrAppLp) * usdPrice).toFixed(6)}
+              td $#{(calcFunc.caclGas(avgValues[3]+1, glRemoveOrAppLp) * usdPrice).toFixed(6)}
+      .card-body
+        p.h4 Latest Token Transfers:
+          .table-responsive
+            table.table.block-info
+              thead
+                tr
+                  th From
+                  th
+                  th To
+                  th Value 
+                  th Token
+              tbody
+                for tx in txTransfers  
+                  tr
+                    td
+                      a(href="/account/" + tx.from) #{tx.from.substr(0, 10)}
+                    td
+                      span.label.label-orange.rounded OUT
+                    td    
+                      a(href="/account/" + tx.to) #{tx.to.substr(0, 10)}
+                    td #{tx.value} 
+                    td(style='display: flex; align-items: center;') 
+                      if tx.token
+                        img(style='margin-right:4px' src='/img/tokens/'+ tx.token.toLowerCase() + '.png' width='14px')
+                        a(href='/token/0xa887adb722cf15bc1efe3c6a5d879e0482e8d197' ) #{tx.token}

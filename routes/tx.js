@@ -5,7 +5,7 @@ const { Op } = require('sequelize')
 
 const InputDataDecoder = require('ethereum-input-data-decoder')
 const {
-  Tokens, Transactions, Prices,
+  Contracts, Tokens, Transactions, Prices,
 } = require('../models')
 
 async function decodeTx(tx, txInput, contractAddress) {
@@ -41,7 +41,13 @@ async function decodeTx(tx, txInput, contractAddress) {
         expAmount: decodedObj.inputs[3].toString() / (10 ** 18),
       }
     }
-
+    if (decodedObj.method === 'swapExactEXPForTokens') {
+      decodedData = {
+        method: decodedObj.method,
+        amountOut: decodedObj.inputs[0].toString() / (10 ** 18),
+        tokenPath: `0x${decodedObj.inputs[1][1]}`,
+      }
+    }
     if (decodedObj.method === 'swapExactTokensForTokens') {
       const tokenIn = `0x${decodedObj.inputs[2][0]}`
       const tokenPath = `0x${decodedObj.inputs[2][2]}`
@@ -79,12 +85,32 @@ async function decodeTx(tx, txInput, contractAddress) {
       }
     }
   } else {
-    // erc20 or erc644
-    const contractABI = require('../data/ABI644.json')
+    let contractABI
+    try {
+      // wexp
+      contractABI = require(`../data/${existingToken.ticker.toLowerCase()}ABI.json`)
+    } catch (e) {
+      // erc 20 or erc644
+      contractABI = require('../data/ABI644.json')
+    }
+
     if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }
     const decoder = new InputDataDecoder(contractABI)
     const decodedObj = decoder.decodeData(txInput)
+    // for wexp
+    if (decodedObj.method === 'deposit') {
+      decodedData = {
+        method: 'wrap',
+      }
+    }
+    if (decodedObj.method === 'withdraw') {
+      decodedData = {
+        method: 'unwrap',
+        amount: decodedObj.inputs[0].toString() / (10 ** 18),
+      }
+    }
 
+    // for erc644
     if (decodedObj.method === 'approve') {
       decodedData = {
         method: decodedObj.method,
@@ -109,17 +135,22 @@ router.get('/:tx', async (req, res) => {
   let price = 0
   let tx
   let parsedTx
+  let isContract = false
   try {
     tx = await Transactions.findOne({ where: { hash: txHash.toLowerCase() } })
   } catch (e) {
     console.log('Cannot get this tx')
     console.log(e)
   }
-
   if (!tx) return
 
   if (tx.data !== '0x') {
-    parsedTx = await decodeTx(txHash, tx.data, tx.to)
+    // HOW TO DETECT ONLY TOKEN CREATION
+    const contractInfo = await Contracts.findOne({ where: { hash: txHash.toLowerCase() } })
+    if (!contractInfo) {
+      parsedTx = await decodeTx(txHash, tx.data, tx.to)
+    }
+    isContract = true
   }
 
   try {
@@ -145,6 +176,7 @@ router.get('/:tx', async (req, res) => {
     tokenData: tokenData || null,
     parsedTx,
     tokenPrice: tokenPrice || null,
+    isContract,
   })
 })
 

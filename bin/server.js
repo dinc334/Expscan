@@ -48,6 +48,7 @@ app.use('/v1', require('../routes/v1Api'))
 app.use('/apis', require('../routes/publicApi')) // public Api docs page
 app.use('/pending', require('../routes/pending'))
 app.use('/error', require('../routes/error'))
+app.use('/gastracker', require('../routes/gastracker'))
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

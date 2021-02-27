@@ -52,18 +52,18 @@ async function getAllTokenBalances(address) {
 async function initTokenBalances() {
   const allAddresses = await Addresses.findAll()
   const allTokens = await Tokens.findAll({ where: { address: { [Op.ne]: null } } })
-  const allPromises = [] // 315843
-  allAddresses.forEach(({ address }) => {
-    allTokens.forEach((token) => {
-      allAddresses.push(getTokenBalance(address, contractABI, token.address, token.ticker))
-    })
-  })
-  const result = await Promise.all(allPromises)
-  console.log(result.length)
-  // allAddresses.forEach(async ({ address }) => {
-  //   const allBalances = await getAllTokenBalances(address)
-  //   console.log(allBalances)
-  // })
+  // 315843
+  const allDdata = []
+  for (const token of allTokens) {
+    console.log(`All balances of ${token.name} is written`)
+    const allPromises = []
+    for (const address of allAddresses) {
+      await sleep(10)
+      allPromises.push(getTokenBalance(address.address, contractABI, token.address, token.ticker))
+    }
+    const result = await Promise.all(allPromises)
+    allDdata.push(result)
+  }
 }
 
 initTokenBalances()

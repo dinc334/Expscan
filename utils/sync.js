@@ -35,7 +35,7 @@ async function main() {
   }
 }
 
-main() 
+main()
 
 async function listenBlocks() {
   const data = await web3.eth.getBlock('latest')
@@ -83,8 +83,20 @@ async function listenBlocks() {
           console.log(e)
         }
         // if this tx create new contract, them skip this loop iteration
-        if (!transaction.to) continue
+        if (!transaction.to) {
+          const contractData = await web3.eth.getTransactionReceipt(tx)
+          try {
+            await Addresses.create({
+              address: contractData.contractAddress,
+              last_active: data.timestamp,
+            }, { returning: false })
+          } catch (e) {
+            console.log('Cannot create address of created contract')
+          }
+          continue
+        }
         if (transaction.input !== '0x') {
+          // TO DO: add decoding feature
           await createCustomTx(transaction, data.timestamp)
         }
         // update Addresses
@@ -120,8 +132,8 @@ async function listenBlocks() {
             console.error(e)
           }
         }
-      }
-    )}
+      })
+    }
     console.log(` - New block was added ${data.number}`)
   }
   console.log('---------------Empty call------------')

@@ -16,7 +16,6 @@ const ABI = require('../data/ABI644.json')
 
 async function saveContract(hash) {
   const data = await web3.eth.getTransactionReceipt(hash)
-  console.log(data)
   try {
     await Contracts.create({
       hash,
@@ -77,6 +76,7 @@ async function getMissingBlocks(fromBlock, toBlock) {
           hash: tx,
         }, { returning: false }))
         if (transaction.to) {
+          // regular transaction
           try {
             await Addresses.create({
               address: transaction.to.toLowerCase(),
@@ -86,6 +86,17 @@ async function getMissingBlocks(fromBlock, toBlock) {
             await Addresses.update({
               last_active: data.timestamp,
             }, { where: { address: transaction.to.toLowerCase() } })
+          }
+        } else {
+          // contract created
+          const contractData = await web3.eth.getTransactionReceipt(tx)
+          try {
+            await Addresses.create({
+              address: contractData.contractAddress,
+              last_active: data.timestamp,
+            }, { returning: false })
+          } catch (e) {
+            console.log('Cannot create address of created contract')
           }
         }
       }

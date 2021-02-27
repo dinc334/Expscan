@@ -10,7 +10,7 @@ const web3 = new Web3()
 web3.setProvider(new web3.providers.HttpProvider(CONFIG.web3Http))
 
 const {
-  Addresses, Transactions, TokensTxs, Prices, Blocks,
+  Addresses, Transactions, TokensTxs, Prices, Blocks, Contracts,
 } = require('../models')
 
 router.get('/:address', async (req, res) => {
@@ -18,7 +18,7 @@ router.get('/:address', async (req, res) => {
   page = Number(page)
   const address = req.params.address.toLowerCase()
 
-  let priceEXP; let transactions; let minedBlocks; let txsTokens; let balances
+  let priceEXP; let transactions; let minedBlocks; let txsTokens; let balances; let contractInfo
   try {
     balances = await Addresses.findOne({
       attributes: { exclude: ['id', 'last_active'] },
@@ -26,6 +26,14 @@ router.get('/:address', async (req, res) => {
     })
   } catch (e) {
     console.log('Internal DB error (Addresses)')
+  }
+  try {
+    contractInfo = await Contracts.findOne({
+      attributes: { exclude: ['id'] },
+      where: { contractAddress: address },
+    })
+  } catch (e) {
+    console.log('Internal DB error (Contracts)')
   }
 
   let expBalance = await web3.eth.getBalance(address)
@@ -95,6 +103,7 @@ router.get('/:address', async (req, res) => {
   }
 
   return res.render('account', {
+    contractInfo,
     expBalance,
     minedBlocks,
     page,

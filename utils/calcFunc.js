@@ -5,6 +5,7 @@ const moment = require('moment')
 TimeAgo.locale(en)
 
 const calcFunc = {
+  caclGas: (gas, gasLimit) => (gas * gasLimit) / 10 ** 9,
   calcDate: function calcDate(date) {
     const data = moment(date * 1000)
     return data.fromNow()
