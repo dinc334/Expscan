@@ -364,6 +364,11 @@ h3.titles{
   font-weight: bold;
 }
 
+.block-info p.secondSwap {
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+
 .heightBLock > *{
   display: inline-block;
   margin: 0 5px 0 5px;

@@ -59,6 +59,19 @@ block content
                     | #{parsedTx.reason}
                   else 
                     i.fa.fa-caret-right(style='margin-right:5px')
+                    if parsedTx.method == 'leave'
+                      span.decodedNames Unstake 
+                      | #{parsedTx.amount}   
+                      a(href='/token/' + tx.to)  #{check.checkAddress(tx.to)}  
+                      span.decodedNames To  
+                      a(href='/token/0xd1365a5af713cde10c6ac3fb9edbb2bbbd4b2ba2') EGG 
+                    if parsedTx.method == 'enter'
+                      span.decodedNames Stake 
+                      | #{parsedTx.amount} 
+                      a(href='/token/0xd1365a5af713cde10c6ac3fb9edbb2bbbd4b2ba2') EGG 
+                      span.decodedNames To
+                      a(href='/token/' + tx.to)  #{check.checkAddress(tx.to)}
+
                     if parsedTx.method == 'wrap'
                       span.decodedNames Wrap 
                       | #{tx.value / 10 ** 18} EXP 
@@ -108,14 +121,27 @@ block content
                       span.decodedNames Harvest some 
                       img(src='/img/tokens/egg token.png' width='18px') 
                       | EGG from (#{check.checkAddress(tx.to)})  Pool
+                    if parsedTx.method == 'addLiquidity'
+                      span.decodedNames Add 
+                      | #{parsedTx.tokenAAmount}   
+                      a(href="/token/" + parsedTx.tokenAAddress)
+                        img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenAAddress).toLowerCase() +'.png' width='18px')   
+                        |  #{check.checkAddress(parsedTx.tokenAAddress.toLowerCase())} 
+                      span.decodedNames And 
+                      | #{parsedTx.tokenBAmount}  
+                      a(href="/token/" + parsedTx.tokenBAddress)
+                        img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenBAddress).toLowerCase() +'.png' width='18px')  
+                        |  #{check.checkAddress(parsedTx.tokenBAddress.toLowerCase())}  
+                      span.decodedNames Liquidity To    
+                      a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
 
                     if parsedTx.method == 'addLiquidityEXP'
                       span.decodedNames Add 
-                      | #{parsedTx.expAmount} Exp 
+                      | #{parsedTx.expAmount} EXP 
                       span.decodedNames And 
-                      | #{parsedTx.tokenAmountMin} 
+                      | #{parsedTx.tokenAmountMin}   
                       img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenAddress).toLowerCase() +'.png' width='18px')  
-                      a(href="/token/" + parsedTx.tokenAddress)  
+                      a(href="/token/" + parsedTx.tokenAddress)   #{check.checkAddress(parsedTx.tokenAddress)}  
                       span.decodedNames Liquidity To  
                       a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
 
@@ -136,10 +162,31 @@ block content
                       | #{parsedTx.amountOutMin} 
                       span.decodedNames On 
                       a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
+                    if parsedTx.method == 'swapEXPForExactTokens'
+                      span.decodedNames Swap 
+                      | #{tx.value / 10 ** 18} Exp 
+                      span.decodedNames For 
+                      | #{tx.value / 10 ** 18} 
+                      if check.checkAddress(parsedTx.pathToken)
+                        img(src='/img/tokens/' + check.checkAddress(parsedTx.pathToken).toLowerCase() +'.png' width='18px') 
+                      a(href="/token/" + parsedTx.pathToken)  #{check.checkAddress(parsedTx.pathToken)}
+                      p.secondSwap 
+                        i.fa.fa-caret-right(style='margin-right:5px')
+                        span.decodedNames Swap 
+                        | #{tx.value / 10 ** 18}  
+                        if check.checkAddress(parsedTx.pathToken)
+                          img(src='/img/tokens/' + check.checkAddress(parsedTx.pathToken).toLowerCase() +'.png' width='18px') 
+                        a(href="/token/" + parsedTx.pathToken)  #{check.checkAddress(parsedTx.pathToken)}  
+                        span.decodedNames For 
+                        | #{parsedTx.amountOut}
+                        if check.checkAddress(parsedTx.toToken)
+                          img(src='/img/tokens/' + check.checkAddress(parsedTx.toToken).toLowerCase() +'.png' width='18px') 
+                        a(href="/token/" + parsedTx.toToken)  #{check.checkAddress(parsedTx.toToken)} 
+                        span.decodedNames On  
+                        a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
+
 
                     if parsedTx.method == 'swapExactEXPForTokens'
-                      //- amountOut: decodedObj.inputs[0].toString() / (10 ** 18),
-                      //- tokenPath: `0x${decodedObj.inputs[1][1]}`,
                       span.decodedNames Swap 
                       | #{tx.value / 10 ** 18} Exp 
                       span.decodedNames For 

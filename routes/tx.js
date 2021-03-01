@@ -18,12 +18,13 @@ async function decodeTx(tx, txInput, contractAddress) {
       // might be labLP, eggLP, wagmiLP, prmLP address, etc.
       '0x6680b66406dc1f1bcffdbaca320f9d950e65dba0': 'expSushiRouter',
       '0xfaf3ddcb8d17db02e08e45f02afb8d427669d592': 'expUniRouter',
+      '0xfdcdd3ee5d5d99eedb2fcb38927378199e51a4cc': 'bridge',
     }
-
     const contractABI = require(`../data/${notErcABIs[contractAddress.toLowerCase()]}.json`)
     if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }
     const decoder = new InputDataDecoder(contractABI)
     const decodedObj = decoder.decodeData(txInput)
+
     // TO DO: move to switch after all method added
     if (decodedObj.method === 'removeLiquidityEXPWithPermit') {
       decodedData = {
@@ -31,6 +32,18 @@ async function decodeTx(tx, txInput, contractAddress) {
         tokenAddress: `0x${decodedObj.inputs[0]}`,
         tokenAmount: decodedObj.inputs[2].toString() / (10 ** 18),
         expAmount: decodedObj.inputs[3].toString() / (10 ** 18),
+      }
+    }
+    if (decodedObj.method === 'add') {
+      console.log('------------------WTF method')
+    }
+    if (decodedObj.method === 'addLiquidity') {
+      decodedData = {
+        method: decodedObj.method,
+        tokenAAddress: `0x${decodedObj.inputs[0]}`,
+        tokenBAddress: `0x${decodedObj.inputs[1]}`,
+        tokenAAmount: decodedObj.inputs[2].toString() / (10 ** 18),
+        tokenBAmount: decodedObj.inputs[3].toString() / (10 ** 18),
       }
     }
     if (decodedObj.method === 'addLiquidityEXP') {
@@ -48,9 +61,17 @@ async function decodeTx(tx, txInput, contractAddress) {
         tokenPath: `0x${decodedObj.inputs[1][1]}`,
       }
     }
+    if (decodedObj.method === 'swapEXPForExactTokens') {
+      decodedData = {
+        method: decodedObj.method,
+        amountOut: decodedObj.inputs[0].toString() / (10 ** 18),
+        pathToken: `0x${decodedObj.inputs[1][0]}`,
+        toToken: `0x${decodedObj.inputs[1][1]}`,
+      }
+    }
     if (decodedObj.method === 'swapExactTokensForTokens') {
       const tokenIn = `0x${decodedObj.inputs[2][0]}`
-      const tokenPath = `0x${decodedObj.inputs[2][2]}`
+      const tokenPath = `0x${decodedObj.inputs[2][1]}`
       decodedData = {
         method: decodedObj.method,
         amountIn: decodedObj.inputs[0].toString() / (10 ** 18),
@@ -84,45 +105,60 @@ async function decodeTx(tx, txInput, contractAddress) {
         amountOut: decodedObj.inputs[1].toString() / (10 ** 18),
       }
     }
-  } else {
-    let contractABI
-    try {
-      // wexp
-      contractABI = require(`../data/${existingToken.ticker.toLowerCase()}ABI.json`)
-    } catch (e) {
-      // erc 20 or erc644
-      contractABI = require('../data/ABI644.json')
-    }
+  }
+  let contractABI
+  try {
+    // wexp or xegg
+    contractABI = require(`../data/${existingToken.ticker.toLowerCase()}ABI.json`)
+  } catch (e) {
+    // erc 20 or erc644
+    contractABI = require('../data/ABI644.json')
+  }
 
-    if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }
-    const decoder = new InputDataDecoder(contractABI)
-    const decodedObj = decoder.decodeData(txInput)
-    // for wexp
-    if (decodedObj.method === 'deposit') {
-      decodedData = {
-        method: 'wrap',
-      }
-    }
-    if (decodedObj.method === 'withdraw') {
-      decodedData = {
-        method: 'unwrap',
-        amount: decodedObj.inputs[0].toString() / (10 ** 18),
-      }
-    }
+  if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }
+  const decoder = new InputDataDecoder(contractABI)
+  const decodedObj = decoder.decodeData(txInput)
 
-    // for erc644
-    if (decodedObj.method === 'approve') {
-      decodedData = {
-        method: decodedObj.method,
-        addressDestination: `0x${decodedObj.inputs[0]}`,
-      }
+  // for xEgg
+  if (decodedObj.method === 'leave') {
+    decodedData = {
+      method: decodedObj.method,
+      amount: decodedObj.inputs[0].toString() / (10 ** 18),
     }
-    if (decodedObj.method === 'transfer') {
-      decodedData = {
-        method: decodedObj.method,
-        addressDestination: `0x${decodedObj.inputs[0]}`,
-        value: decodedObj.inputs[1].toString() / 10 ** 18,
-      }
+  }
+
+  if (decodedObj.method === 'enter') {
+    decodedData = {
+      method: decodedObj.method,
+      amount: decodedObj.inputs[0].toString() / (10 ** 18),
+    }
+  }
+
+  // for wexp
+  if (decodedObj.method === 'deposit') {
+    decodedData = {
+      method: 'wrap',
+    }
+  }
+  if (decodedObj.method === 'withdraw') {
+    decodedData = {
+      method: 'unwrap',
+      amount: decodedObj.inputs[0].toString() / (10 ** 18),
+    }
+  }
+
+  // for erc644
+  if (decodedObj.method === 'approve') {
+    decodedData = {
+      method: decodedObj.method,
+      addressDestination: `0x${decodedObj.inputs[0]}`,
+    }
+  }
+  if (decodedObj.method === 'transfer') {
+    decodedData = {
+      method: decodedObj.method,
+      addressDestination: `0x${decodedObj.inputs[0]}`,
+      value: decodedObj.inputs[1].toString() / 10 ** 18,
     }
   }
 
@@ -182,10 +218,6 @@ router.get('/:tx', async (req, res) => {
 
 // TO DO: add later with web3 websockets
 router.get('/pending', (req, res, next) => {
-  const config = req.app.get('config')
-  const web3 = new Web3()
-  web3.setProvider(config.provider)
-
   res.render('tx_pending', { txs: [] })
 })
 
