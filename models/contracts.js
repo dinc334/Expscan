@@ -1,27 +1,25 @@
-"use strict";
-
-module.exports = function(sequelize, DataTypes) {
-  var Contracts = sequelize.define('Contracts', {
+module.exports = function (sequelize, DataTypes) {
+  const Contracts = sequelize.define('Contracts', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
-      autoIncrement: true
+      autoIncrement: true,
     },
-    hash : {
+    hash: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     contractAddress: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     creator: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      allowNull: false,
+    },
   }, {
-    tableName: 'contracts', timestamps : false
-  });
+    tableName: 'contracts', timestamps: false,
+  })
 
-  return Contracts;
-};
+  return Contracts
+}

@@ -6,9 +6,9 @@ block content
       .h3Border
         if contractInfo 
           h3 Contract: 
-            span #{account.address} 
-            if check.checkAddress(account.address.toLowerCase())
-              | (#{check.checkAddress(account.address.toLowerCase())})
+            span #{contractInfo.contractAddress} 
+            if check.checkAddress(contractInfo.contractAddress.toLowerCase())
+              | (#{check.checkAddress(contractInfo.contractAddress.toLowerCase())})
         else 
           h3 Address: 
             if account
