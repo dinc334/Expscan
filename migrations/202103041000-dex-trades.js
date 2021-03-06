@@ -1,29 +1,33 @@
 module.exports = {
-  up: (queryInterface, Sequelize) => queryInterface.createTable('dexTrades', {
+  up: (queryInterface, Sequelize) => queryInterface.createTable('dextrades', {
     id: {
       type: Sequelize.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    hash: {
-      type: Sequelize.STRING,
+    hash_id: {
+      type: Sequelize.INTEGER,
       allowNull: false,
       unique: true,
     },
-    tokenAmountIn: {
-      type: Sequelize.INTEGER,
+    token_in: {
+      type: Sequelize.STRING,
       allowNull: false,
     },
-    tokenAmountOut: {
-      type: Sequelize.INTEGER,
+    token_out: {
+      type: Sequelize.STRING,
       allowNull: false,
     },
-    swappedRate: {
-      type: Sequelize.INTEGER,
+    amount_in: {
+      type: Sequelize.DOUBLE,
       allowNull: false,
     },
-    txnValue: {
-      type: Sequelize.INTEGER,
+    amount_out: {
+      type: Sequelize.DOUBLE,
+      allowNull: false,
+    },
+    swapped_rate: {
+      type: Sequelize.DOUBLE,
       allowNull: false,
     },
     dex: {
@@ -32,5 +36,5 @@ module.exports = {
     },
   }),
 
-  down: (queryInterface, Sequelize) => queryInterface.dropTable('dexTrades'),
+  down: (queryInterface, Sequelize) => queryInterface.dropTable('dextrades'),
 }

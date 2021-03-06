@@ -5,7 +5,7 @@ const e = require('express')
 const { Tokens } = require('../models')
 const chainIds = require('../data/chainIds.json')
 
-async function decodeTx(txInput, contractAddress) {
+async function decodeTx(tx, contractAddress) {
   const existingToken = await Tokens.findOne({ where: { [Op.and]: { address: contractAddress, type: 'ERC-644' } } })
   let decodedData = {}
   if (!existingToken) {
@@ -25,9 +25,10 @@ async function decodeTx(txInput, contractAddress) {
     }
     if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }
     const decoder = new InputDataDecoder(contractABI)
-    const decodedObj = decoder.decodeData(txInput)
+    const decodedObj = decoder.decodeData(tx.data)
     // console.log(decodedObj)
     // TO DO: move to switch after all method added
+
     // eggMaker
     if (decodedObj.method === 'convert') {
       decodedData = {
@@ -38,17 +39,13 @@ async function decodeTx(txInput, contractAddress) {
     }
 
     // expUniRouter
-    // swapExactTokensForTokensSupportingFeeOnTransferTokens
-    // console.log(decodedObj)
-    // if (decodedObj.method === 'swapExactTokensForTokensSupportingFeeOnTransferTokens') {
-    //   decodedData = {
-    //     method: 'newMethod',
-    //   }
-    // }
     if (decodedObj.method === 'removeLiquidityEXPWithPermitSupportingFeeOnTransferTokens') {
-      console.log(decodedObj)
+      // EABN has 6 decimals, lol
       decodedData = {
         method: 'removeLiquidityEXPWithPermitSupportingFee',
+        tokenAddress: `0x${decodedObj.inputs[0]}`,
+        tokenAmount: decodedObj.inputs[2].toString() / (10 ** 18),
+        expAmount: decodedObj.inputs[3].toString() / (10 ** 18),
       }
     }
 
@@ -106,59 +103,71 @@ async function decodeTx(txInput, contractAddress) {
         expAmount: decodedObj.inputs[3].toString() / (10 ** 18),
       }
     }
+    if (decodedObj.method === 'swapTokensForExactEXP') {
+      decodedData = {
+        method: 'swap',
+        amountIn: decodedObj.inputs[1].toString() / (10 ** 18),
+        amountOut: decodedObj.inputs[0].toString() / (10 ** 18),
+        tokenIn: `0x${decodedObj.inputs[2][0]}`,
+        tokenOut: `0x${decodedObj.inputs[2][1]}`,
+      }
+    }
     if (decodedObj.method === 'swapExactEXPForTokens') {
       decodedData = {
-        method: decodedObj.method,
+        method: 'swap',
+        amountIn: tx.value / (10 ** 18),
         amountOut: decodedObj.inputs[0].toString() / (10 ** 18),
-        tokenPath: `0x${decodedObj.inputs[1][1]}`,
+        tokenIn: 'EXP',
+        tokenOut: `0x${decodedObj.inputs[1][1]}`,
       }
     }
     if (decodedObj.method === 'swapEXPForExactTokens') {
       decodedData = {
         method: decodedObj.method,
+        amountIn: tx.value / (10 ** 18),
         amountOut: decodedObj.inputs[0].toString() / (10 ** 18),
+        tokenIn: 'EXP',
         pathToken: `0x${decodedObj.inputs[1][0]}`,
-        toToken: `0x${decodedObj.inputs[1][1]}`,
+        tokenOut: `0x${decodedObj.inputs[1][1]}`,
       }
     }
     if (decodedObj.method === 'swapExactTokensForTokens') {
       const pathLength = decodedObj.inputs[2].length
       const tokenIn = `0x${decodedObj.inputs[2][pathLength - 2]}`
-      const tokenPath = `0x${decodedObj.inputs[2][pathLength - 1]}`
+      const tokenOut = `0x${decodedObj.inputs[2][pathLength - 1]}`
       decodedData = {
-        method: decodedObj.method,
+        method: 'swap',
         amountIn: decodedObj.inputs[0].toString() / (10 ** 18),
         amountOut: decodedObj.inputs[1].toString() / (10 ** 18),
         tokenIn: tokenIn || `0x${decodedObj.inputs[2][pathLength]}`,
-        tokenPath,
+        tokenOut,
       }
     }
-    if (decodedObj.method === 'swapTokensForExactTokens') {
+    if (decodedObj.method === 'swapTokensForExactTokens' || decodedObj.method === 'swapExactTokensForTokensSupportingFeeOnTransferTokens') {
       decodedData = {
-        method: decodedObj.method,
-        amountOut: decodedObj.inputs[0].toString() / (10 ** 18),
+        method: 'swap',
         amountIn: decodedObj.inputs[1].toString() / (10 ** 18),
+        amountOut: decodedObj.inputs[0].toString() / (10 ** 18),
         tokenIn: `0x${decodedObj.inputs[2][0]}`,
-        tokenPath: `0x${decodedObj.inputs[2][1]}`,
+        tokenOut: `0x${decodedObj.inputs[2][1]}`,
       }
     }
-
     if (decodedObj.method === 'swapExactTokensForEXP') {
-      const tokenAddress = `0x${decodedObj.inputs[2][0]}`
       decodedData = {
-        method: decodedObj.method,
+        method: 'swap',
         amountIn: decodedObj.inputs[0].toString() / (10 ** 18),
-        amountOutMin: `${decodedObj.inputs[1].toString() / (10 ** 18)} EXP`,
-        tokenAddress,
+        amountOut: `${decodedObj.inputs[1].toString() / (10 ** 18)}`,
+        tokenIn: `0x${decodedObj.inputs[2][0]}`,
+        tokenOut: 'EXP',
       }
     }
-
     if (decodedObj.method === 'swapExactTokensForEXPSupportingFeeOnTransferTokens') {
       decodedData = {
-        method: 'swapExactTokensForEXPSupportingFee',
-        tokenAddress: `0x${decodedObj.inputs[2][0]}`,
+        method: 'swap',
         amountIn: decodedObj.inputs[0].toString() / (10 ** 18),
-        amountOutMin: decodedObj.inputs[1].toString() / (10 ** 18),
+        amountOut: decodedObj.inputs[1].toString() / (10 ** 18),
+        tokenIn: `0x${decodedObj.inputs[2][0]}`,
+        tokenOut: 'EXP',
       }
     }
 
@@ -209,7 +218,7 @@ async function decodeTx(txInput, contractAddress) {
 
   if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }
   const decoder = new InputDataDecoder(contractABI)
-  const decodedObj = decoder.decodeData(txInput)
+  const decodedObj = decoder.decodeData(tx.data)
 
   // for xEgg
   if (decodedObj.method === 'leave') {

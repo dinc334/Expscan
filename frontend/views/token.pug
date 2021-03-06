@@ -73,7 +73,40 @@ block content
           a(href='#transactions', aria-controls='transactions', role='tab', data-toggle='tab' style="margin-left:5px" aria-selected ='true') Transfers
         li 
           a(href='#hodlers', aria-controls='hodlers', role='tab', data-toggle='tab' aria-selected ='false') Holders
+      if dexTrades
+        li 
+          a(href='#dextrades', aria-controls='dextrades', role='tab', data-toggle='tab' aria-selected ='false') Dex Trades
     .tab-content
+      #dextrades.tab-pane.active(role='tabpanel')
+        .block-heading 
+          h4 Latest #{dexTrades.length} Dex Trades 
+        .table-responsive 
+          table.table.block-info
+            thead
+              tr
+                th TxHash
+                th Age
+                th Action
+                th Token Amount (Out)
+                th Token Amount (In)
+                th Swapped Rate 
+                th Dex
+            tbody
+              for dexTrade in dexTrades
+                tr
+                  td 
+                    a(href='/tx/' + dexTrade.hash) #{dexTrade.hash.substr(0,10)}...
+                  td #{calcFunc.calcDate(dexTrade.timestamp)}
+                  td 
+                    if dexTrade.token_in === tokenData.address
+                      span.buy BUY 
+                    else 
+                      span.sell SELL
+                  td #{dexTrade.amount_out.toFixed(5)} #{check.checkAddress(dexTrade.token_out)}
+                  td #{dexTrade.amount_in.toFixed(5)} #{check.checkAddress(dexTrade.token_in)}
+                  td #{dexTrade.swapped_rate.toFixed(5)} (#{(dexTrade.swapped_rate * expPrice).toFixed(4)}$)
+                  td #{dexTrade.dex}
+
       #transactions.tab-pane.active(role='tabpanel')    
         .block-heading
           h4  Latest #{txsTokens.length} Token Transfer Events

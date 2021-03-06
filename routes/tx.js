@@ -26,7 +26,7 @@ router.get('/:tx', async (req, res) => {
     // HOW TO DETECT ONLY TOKEN CREATION
     const contractInfo = await Contracts.findOne({ where: { hash: txHash.toLowerCase() } })
     if (!contractInfo) {
-      parsedTx = await decodeTx(tx.data, tx.to)
+      parsedTx = await decodeTx(tx, tx.to)
     }
     isContract = true
   }

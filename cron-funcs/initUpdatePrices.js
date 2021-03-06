@@ -1,9 +1,12 @@
+/* eslint-disable no-restricted-syntax */
 const rp = require('request-promise')
 const cron = require('node-cron')
 const Web3 = require('web3')
 const { Op } = require('sequelize')
 
-const { Prices, Tokens } = require('../models')
+const {
+  Prices, Tokens, sequelize,
+} = require('../models')
 const CONFIG = require('../config/config-server.json')
 
 const web3 = new Web3()
@@ -74,34 +77,6 @@ async function initPrice() {
     ticker: 'BTC',
     price_btc: 1,
     price_usd: btcPrice,
-  }, {
-    ticker: 'LAB',
-    price_usd: 0.012,
-    price_btc: btcPrice / 0.012,
-  }, {
-    ticker: 'PEX',
-    price_usd: 0.0001,
-    price_btc: btcPrice / 0.001,
-  }, {
-    ticker: 'EGG',
-    price_usd: 0.002,
-    price_btc: btcPrice / 0.002,
-  }, {
-    ticker: 'LOVE',
-    price_usd: 0.096,
-    price_btc: btcPrice / 0.096,
-  }, {
-    ticker: 'T64',
-    price_usd: 174,
-    price_btc: btcPrice / 174,
-  }, {
-    ticker: 'PRM',
-    price_usd: 0.0033,
-    price_btc: btcPrice / 0.0033,
-  }, {
-    ticker: 'WAGMI',
-    price_usd: 0.013,
-    price_btc: btcPrice / 0.013,
   }]
   try {
     await Prices.bulkCreate(allData)
@@ -111,6 +86,34 @@ async function initPrice() {
     console.error(e)
   }
 }
+
+// only works with initial EXP price
+async function updateOrInitTokenPrices() {
+  // based on Exp Pric -> update token Price
+  // get latest swap of each token
+  const expPrice = await Prices.findOne({ where: { ticker: 'EXP' } })
+  if (!expPrice) return console.log('Cannt get token prices without initial EXP price')
+  const allTokens = await Tokens.findAll({ where: { type: 'ERC-644', ticker: { [Op.ne]: 'WEXP' } } })
+  const pricesPromises = []
+  for (const token of allTokens) {
+    const query = `SELECT * FROM DexTrades INNER JOIN transactions On dextrades.hash_id=transactions.id WHERE token_in='${token.address}' OR token_out='${token.address}' ORDER BY transactions.timestamp DESC`
+    const result = await sequelize.query(query)
+    const latestSwap = result[0][0]
+    if (latestSwap) {
+      // This is latest USD price based on latest swap
+      const priceUsd = (latestSwap.swapped_rate * expPrice.price_usd).toFixed(3)
+      console.log(`${token.name}: ${priceUsd}$`)
+      // TO DO: update or create
+      pricesPromises.push(Prices.update({
+        price_usd: priceUsd,
+      }, { where: { ticker: token.ticker } }))
+    }
+  }
+  // TO DO: update marketcaps too
+  await Promise.all(pricesPromises)
+  console.log('Tokens prices based on swaps - updated')
+}
+updateOrInitTokenPrices()
 
 async function mainUpdate() {
   const expPrices = await Prices.findOne({ where: { ticker: 'EXP' } })
@@ -138,8 +141,8 @@ async function mainUpdate() {
   }
 }
 
-mainUpdate()
+// mainUpdate()
 
-cron.schedule('0 */1 * * * *', async () => {
-  await mainUpdate()
-})
+// cron.schedule('0 */1 * * * *', async () => {
+//   await mainUpdate()
+// })

@@ -4,7 +4,7 @@ const { Op } = require('sequelize')
 const router = express.Router()
 
 const {
-  Tokens, TokensTxs, TokensBalances, Prices, Addresses,
+  Tokens, TokensTxs, TokensBalances, Prices, sequelize,
 } = require('../models')
 
 router.get('/:address', async (req, res) => {
@@ -25,12 +25,17 @@ router.get('/:address', async (req, res) => {
     }
   }
 
+  const expPrice = await Prices.findOne({ where: { ticker: 'EXP' } })
+
   const txsTokens = await TokensTxs.findAll({
     where: { token: tokenData.name.toLowerCase() },
     order: [['timestamp', 'DESC']],
     offset: ((100 * page) - 100),
     limit: 100,
   })
+  const query = `SELECT * FROM DexTrades INNER JOIN transactions On dextrades.hash_id=transactions.id WHERE token_in='${address}' OR token_out='${address}' ORDER BY transactions.timestamp DESC LIMIT 100`
+  const result = await sequelize.query(query)
+  const dexTrades = result[0]
 
   // DO TO: here will be new table TokenBalances
   const addresses = []
@@ -53,6 +58,8 @@ router.get('/:address', async (req, res) => {
     typeOfBalance: 'test',
     tokenData,
     tokenPrice: tokenPrice || null,
+    dexTrades: dexTrades || [],
+    expPrice: expPrice.price_usd,
     txsTokens,
     id,
   })

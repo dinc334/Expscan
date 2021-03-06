@@ -181,8 +181,11 @@ block content
                       a(href="/token/" + parsedTx.tokenAddress)   #{check.checkAddress(parsedTx.tokenAddress)}  
                       span.decodedNames Liquidity To  
                       a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
+                    
+                    if parsedTx.method == 'swapExactTokensForTokensSupportingFeeOnTransferTokens'
+                      span.decodedNames Test
 
-                    if parsedTx.method == 'removeLiquidity'
+                    if parsedTx.method == 'removeLiquidity' || parsedTx.method == 'removeLiquidityEXPWithPermitSupportingFee'
                       span.decodedNames Remove
                       |  #{parsedTx.expAmount} EXP 
                       span.decodedNames And
@@ -215,27 +218,6 @@ block content
                         |  #{check.checkAddress(parsedTx.tokenBAddress.toLowerCase())}  
                       span.decodedNames Liquidity From    
                       a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
-
-                    if parsedTx.method == 'swapExactTokensForEXPSupportingFee'
-                      span.decodedNames Swap 
-                      | #{parsedTx.amountIn}  
-                      if check.checkAddress(parsedTx.tokenAddress)
-                        img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenAddress).toLowerCase() +'.png' width='18px')
-                        a(href="/token/" + parsedTx.tokenAddress)  #{check.checkAddress(parsedTx.tokenAddress)} 
-                      span.decodedNames For  
-                      | #{parsedTx.amountOutMin} EXP 
-                      span.decodedNames On 
-                      a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
-
-                    if parsedTx.method == 'swapExactTokensForEXP'
-                      span.decodedNames Swap 
-                      | #{parsedTx.amountIn}  
-                      img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenAddress).toLowerCase() +'.png' width='18px')
-                      a(href="/token/" + parsedTx.tokenAddress)  #{check.checkAddress(parsedTx.tokenAddress)} 
-                      span.decodedNames For  
-                      | #{parsedTx.amountOutMin} 
-                      span.decodedNames On 
-                      a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
                     
                     if parsedTx.method == 'swapEXPForExactTokens'
                       span.decodedNames Swap 
@@ -254,35 +236,29 @@ block content
                         a(href="/token/" + parsedTx.pathToken)  #{check.checkAddress(parsedTx.pathToken)}  
                         span.decodedNames For 
                         | #{parsedTx.amountOut}  
-                        if check.checkAddress(parsedTx.toToken)
-                          img(src='/img/tokens/' + check.checkAddress(parsedTx.toToken).toLowerCase() +'.png' width='18px') 
-                        a(href="/token/" + parsedTx.toToken)  #{check.checkAddress(parsedTx.toToken)} 
+                        if check.checkAddress(parsedTx.tokenOut)
+                          img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenOut).toLowerCase() +'.png' width='18px') 
+                        a(href="/token/" + parsedTx.tokenOut)  #{check.checkAddress(parsedTx.tokenOut)} 
                         span.decodedNames On  
                         a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
-
-
-                    if parsedTx.method == 'swapExactEXPForTokens'
-                      span.decodedNames Swap 
-                      | #{tx.value / 10 ** 18} Exp 
-                      span.decodedNames For 
-                      | #{parsedTx.amountOut}
-                      if check.checkAddress(parsedTx.tokenPath)
-                        img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenPath).toLowerCase() +'.png' width='18px') 
-                      a(href="/token/" + parsedTx.tokenPath)  #{check.checkAddress(parsedTx.tokenPath)} 
-                      span.decodedNames On  
-                      a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
-
-                    if parsedTx.method == 'swapExactTokensForTokens' || parsedTx.method == 'swapTokensForExactTokens'
+                      
+                    if parsedTx.method == 'swap'
                       span.decodedNames Swap 
                       | #{parsedTx.amountIn}  
-                      if check.checkAddress(parsedTx.tokenIn).toLowerCase()
-                        img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenIn).toLowerCase() +'.png' width='18px')
+                      if parsedTx.tokenIn != 'EXP'
+                        if check.checkAddress(parsedTx.tokenIn).toLowerCase() 
+                          img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenIn).toLowerCase() +'.png' width='18px')
+                      else 
+                        | EXP
                       a(href="/token/" + parsedTx.tokenIn)  #{check.checkAddress(parsedTx.tokenIn)} 
                       span.decodedNames For 
                       |  #{parsedTx.amountOut}    
-                      if check.checkAddress(parsedTx.tokenPath)
-                        img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenPath).toLowerCase() +'.png' width='18px') 
-                      a(href="/token/" + parsedTx.tokenPath)  #{check.checkAddress(parsedTx.tokenPath)} 
+                      if parsedTx.tokenOut != 'EXP'
+                        if check.checkAddress(parsedTx.tokenOut)
+                          img(src='/img/tokens/' + check.checkAddress(parsedTx.tokenOut).toLowerCase() +'.png' width='18px') 
+                        a(href="/token/" + parsedTx.tokenOut)  #{check.checkAddress(parsedTx.tokenOut)} 
+                      else 
+                        | EXP  
                       span.decodedNames On  
                       a(href= "https://www.eggs.cool/ex/#/swap") EggSwap
 

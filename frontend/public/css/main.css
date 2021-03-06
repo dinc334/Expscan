@@ -632,6 +632,14 @@ span .label{
   padding: 7px;
 }
 
+span.buy {
+  color: #00c9a7;
+}
+
+span.sell {
+  color: #de4437;
+}
+
 .tokenBalances li.list-custom {
   margin: 0;
   width:100%;

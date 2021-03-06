@@ -1,29 +1,33 @@
 module.exports = function (sequelize, DataTypes) {
-  const DexTrades = sequelize.define('DexTrades', {
+  const DexTrades = sequelize.define('dextrades', {
     id: {
       type: DataTypes.INTEGER,
       primaryKey: true,
       autoIncrement: true,
     },
-    hash: {
-      type: DataTypes.STRING,
+    hash_id: {
+      type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
     },
-    tokenAmountIn: {
-      type: DataTypes.INTEGER,
+    token_in: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    tokenAmountOut: {
-      type: DataTypes.INTEGER,
+    token_out: {
+      type: DataTypes.STRING,
       allowNull: false,
     },
-    swappedRate: {
-      type: DataTypes.INTEGER,
+    amount_in: {
+      type: DataTypes.DOUBLE,
       allowNull: false,
     },
-    txnValue: {
-      type: DataTypes.INTEGER,
+    amount_out: {
+      type: DataTypes.DOUBLE,
+      allowNull: false,
+    },
+    swapped_rate: {
+      type: DataTypes.DOUBLE,
       allowNull: false,
     },
     dex: {
@@ -31,7 +35,7 @@ module.exports = function (sequelize, DataTypes) {
       allowNull: false,
     },
   }, {
-    tableName: 'dexTrades', timestamps: false,
+    tableName: 'dextrades', timestamps: false,
   })
 
   return DexTrades
