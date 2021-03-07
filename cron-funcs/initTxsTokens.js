@@ -8,8 +8,8 @@ const CONFIG = require('../config/config-server.json')
 
 web3.setProvider(new web3.providers.HttpProvider(CONFIG.web3Http))
 
-const ABI = require('../data/ABI.json')
-const icoABI = require('../data/icoABI.json')
+const ABI = require('../data/abis/ABI.json')
+const icoABI = require('../data/abis/icoABI.json')
 
 const BalanceAdj = '0x9c3ef85668f064ed75a707a9fef00ed55bab01f5'
 
@@ -68,7 +68,7 @@ async function getAllTransfers(abi, token) {
 }
 
 async function initTxsTokens() {
-  const allTokens = await Tokens.findAll({ where: { address: { [Op.ne]: null } } })
+  const allTokens = await Tokens.findAll({ where: { type: 'ERC-644' } })
 
   allTokens.forEach(async (token) => {
     if (token.ticker === 'LAB') {

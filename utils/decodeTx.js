@@ -1,7 +1,6 @@
 const { Op } = require('sequelize')
 
 const InputDataDecoder = require('ethereum-input-data-decoder')
-const e = require('express')
 const { Tokens } = require('../models')
 const chainIds = require('../data/chainIds.json')
 
@@ -19,7 +18,7 @@ async function decodeTx(tx, contractAddress) {
     const typeOfContract = notErcABIs[contractAddress.toLowerCase()]
     let contractABI = {}
     try {
-      contractABI = require(`../data/${typeOfContract}.json`)
+      contractABI = require(`../data/abis/${typeOfContract}.json`)
     } catch (e) {
       return { erorr: true, reason: 'Cannot find this type of ABI' }
     }
@@ -210,10 +209,10 @@ async function decodeTx(tx, contractAddress) {
   let contractABI
   try {
     // wexp or xegg
-    contractABI = require(`../data/${existingToken.ticker.toLowerCase()}ABI.json`)
-  } catch (e) {
+    contractABI = require(`../data/abis/${existingToken.ticker.toLowerCase()}ABI.json`)
+  } catch (err) {
     // erc 20 or erc644
-    contractABI = require('../data/ABI644.json')
+    contractABI = require('../data/abis/ABI644.json')
   }
 
   if (!contractABI) return { error: true, reason: 'Dont have info about this contract' }

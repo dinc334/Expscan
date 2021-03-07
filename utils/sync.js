@@ -1,13 +1,13 @@
 /* eslint-disable no-await-in-loop */
 const Web3 = require('web3')
-const InputDataDecoder = require('ethereum-input-data-decoder')
 
 const web3 = new Web3()
-const ABI = require('../data/ABI.json')
-const getMissingBlocks = require('./parseGexp.js')
+const ABI = require('../data/abis/ABI.json')
+// const getMissingBlocks = require('./parseGexp.js')
+const decodeTx = require('./decodeTx.js')
 
 const {
-  Blocks, Transactions, Addresses, TxsTokens, Contracts,
+  Blocks, Transactions, Addresses, TxsTokens, Contracts, dextrades,
 } = require('../models')
 
 const { formatAmount } = require('./ethformatter.js')
@@ -15,27 +15,25 @@ const { web3Http } = require('../config/config-server.json')
 
 web3.setProvider(new web3.providers.HttpProvider(web3Http))
 
-const decoder = new InputDataDecoder(ABI)
-
 // listenBlocks - get all latest blocks
-async function main() {
-  const data = await web3.eth.getBlock('latest')
-  const latestDbBlock = await Blocks.max('number') || 0
+// async function main() {
+//   const data = await web3.eth.getBlock('latest')
+//   const latestDbBlock = await Blocks.max('number') || 0
 
-  if (data.number !== latestDbBlock + 1) {
-    const numberOfMissing = data.number - latestDbBlock + 1
-    console.log(`Number of missing blocks is: ${numberOfMissing}`)
-    getMissingBlocks(latestDbBlock + 1, data.number)
-    // update balance of missing blocks
-    // listenBlocks()
-    console.log('All done, know just sync')
-  } else {
-    console.log('Just sync')
-    await listenBlocks()
-  }
-}
+//   if (data.number !== latestDbBlock + 1) {
+//     const numberOfMissing = data.number - latestDbBlock + 1
+//     console.log(`Number of missing blocks is: ${numberOfMissing}`)
+//     getMissingBlocks(latestDbBlock + 1, data.number)
+//     // update balance of missing blocks
+//     // listenBlocks()
+//     console.log('All done, know just sync')
+//   } else {
+//     console.log('Just sync')
+//     await listenBlocks()
+//   }
+// }
 
-main()
+// main()
 
 async function listenBlocks() {
   const data = await web3.eth.getBlock('latest')
@@ -65,8 +63,9 @@ async function listenBlocks() {
       const txs = data.transactions
       txs.forEach(async (tx) => {
         const transaction = await web3.eth.getTransaction(tx)
+        let savedTx = {}
         try {
-          await Transactions.create({
+          savedTx = await Transactions.create({
             blockHash: transaction.blockHash,
             blockNumber: transaction.blockNumber,
             from: transaction.from.toLowerCase(),
@@ -78,7 +77,7 @@ async function listenBlocks() {
             data: transaction.input,
             timestamp: data.timestamp,
             hash: tx,
-          }, { returning: false })
+          })
         } catch (e) {
           console.log(e)
         }
@@ -93,11 +92,12 @@ async function listenBlocks() {
           } catch (e) {
             console.log('Cannot create address of created contract')
           }
-          continue
+          return
         }
         if (transaction.input !== '0x') {
           // TO DO: add decoding feature
-          await createCustomTx(transaction, data.timestamp)
+          await createCustomTx(savedTx, data.timestamp)
+          return
         }
         // update Addresses
         const existsTo = await Addresses.findOne({ where: { address: (transaction.to).toLowerCase() } })
@@ -138,6 +138,27 @@ async function listenBlocks() {
   }
   console.log('---------------Empty call------------')
   setTimeout(listenBlocks, 700)
+}
+
+listenBlocks()
+
+async function createCustomTx(tx, timestamp) {
+  const decodedInfo = await decodeTx(tx.data, tx.to)
+  if (decodedInfo.error) return console.log('Cannt decode tx')
+  if (decodedInfo.method === 'swap' || decodedInfo.method === 'swapEXPForExactTokens') {
+    const amountIn = Number(decodedInfo.amountIn)
+    const amountOut = Number(decodedInfo.amountOut)
+    await dextrades.create({
+      hash_id: tx.id,
+      amount_in: amountIn,
+      amount_out: amountOut,
+      token_in: decodedInfo.tokenIn,
+      token_out: decodedInfo.tokenOut,
+      swapped_rate: decodedInfo.tokenOut === 'EXP' ? amountOut / amountIn : amountIn / amountOut,
+      dex: 'eggswap',
+    })
+    console.log('Dex Trade saved', decodedInfo)
+  }
 }
 
 async function createTxsToken(transaction, timestamp, tokenName) {
@@ -210,11 +231,3 @@ async function saveContract(hash) {
   }
   return data.contractAddress.toLowerCase()
 }
-
-// update Total Supply every 10 min
-// cron.schedule('0 */10 * * * *',async () => {
-// 	console.log(new Date().getMinutes())
-// 	await getTotalExp() // update Total Supply every 10 min
-// 	// 0.5169572615
-// 	// 0.5136815598
-// })

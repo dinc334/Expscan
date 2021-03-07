@@ -89,7 +89,7 @@ async function initPrice() {
 
 // only works with initial EXP price
 async function updateOrInitTokenPrices() {
-  // based on Exp Pric -> update token Price
+  // based on Exp Price -> update token Price
   // get latest swap of each token
   const expPrice = await Prices.findOne({ where: { ticker: 'EXP' } })
   if (!expPrice) return console.log('Cannt get token prices without initial EXP price')
@@ -99,6 +99,7 @@ async function updateOrInitTokenPrices() {
     const query = `SELECT * FROM DexTrades INNER JOIN transactions On dextrades.hash_id=transactions.id WHERE token_in='${token.address}' OR token_out='${token.address}' ORDER BY transactions.timestamp DESC`
     const result = await sequelize.query(query)
     const latestSwap = result[0][0]
+    // get first exp included swap or calculate rate based on token
     if (latestSwap) {
       // This is latest USD price based on latest swap
       const priceUsd = (latestSwap.swapped_rate * expPrice.price_usd).toFixed(3)

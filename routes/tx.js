@@ -48,7 +48,7 @@ router.get('/:tx', async (req, res) => {
     const tokenInfo = await Prices.findOne({ where: { ticker: isContractRecive.ticker } })
     if (tokenInfo) tokenPrice = tokenInfo.price_usd
   }
-  return res.render('tx', {
+  res.render('tx', {
     tx: tx || error,
     price,
     tokenData: tokenData || null,

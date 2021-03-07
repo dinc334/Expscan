@@ -12,8 +12,6 @@ const CONFIG = require('../config/config-server.json')
 
 web3.setProvider(new web3.providers.HttpProvider(CONFIG.web3Http))
 
-const ABI = require('../data/ABI644.json')
-
 async function saveContract(hash) {
   const data = await web3.eth.getTransactionReceipt(hash)
   try {

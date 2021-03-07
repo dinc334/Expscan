@@ -77,7 +77,7 @@ block content
         li 
           a(href='#dextrades', aria-controls='dextrades', role='tab', data-toggle='tab' aria-selected ='false') Dex Trades
     .tab-content
-      #dextrades.tab-pane.active(role='tabpanel')
+      #dextrades.tab-pane(role='tabpanel')
         .block-heading 
           h4 Latest #{dexTrades.length} Dex Trades 
         .table-responsive 
@@ -104,7 +104,7 @@ block content
                       span.sell SELL
                   td #{dexTrade.amount_out.toFixed(5)} #{check.checkAddress(dexTrade.token_out)}
                   td #{dexTrade.amount_in.toFixed(5)} #{check.checkAddress(dexTrade.token_in)}
-                  td #{dexTrade.swapped_rate.toFixed(5)} (#{(dexTrade.swapped_rate * expPrice).toFixed(4)}$)
+                  td #{dexTrade.swapped_rate.toFixed(5)} (#{check.checkAddress(dexTrade.token_out)}/#{check.checkAddress(dexTrade.token_in)})
                   td #{dexTrade.dex}
 
       #transactions.tab-pane.active(role='tabpanel')    
